@@ -1,7 +1,7 @@
 # OpenGLBezierProject
 
 This project is a little application of Bezier Curve and Surface, written in C++ with the help of the openGL Library.
-You may interact with a 3D scene, to visualise curves or surfaces generated randomly.
+You may interact with a 3D scene, to visualise curves or surfaces randomly generated.
 
 # The scene contains
   - 3 lights points, visualised as points (there is 1 light at the back of the scene, and 2 behind the view.
