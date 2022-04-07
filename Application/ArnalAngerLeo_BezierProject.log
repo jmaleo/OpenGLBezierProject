@@ -1,0 +1,18 @@
+﻿  glad.c
+  main.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY' : redéfinition de macro
+D:\Programme & Jeux\Informatique\Librairie Visual Studio\Include\glad\glad.h(32): message : voir la définition précédente de 'APIENTRY'
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\BezierCurve.h(53,52): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\Objects.h(48,12): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\main.cpp(123,15): warning C4244: 'argument' : conversion de 'time_t' en 'unsigned int', perte possible de données
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\main.cpp(148,33): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\main.cpp(399,37): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\main.cpp(418,55): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+  ShaderProgram.cpp
+  Previous IPDB not found, fall back to full compilation.
+LINK : warning LNK4098: conflit entre la bibliothèque par défaut 'MSVCRTD' et les autres bibliothèques ; utilisez /NODEFAULTLIB:library
+  Génération de code en cours
+  All 747 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Fin de la génération du code
+  ArnalAngerLeo_BezierProject.vcxproj -> D:\Programme & Jeux\Informatique\openGL projects\ArnalAngerLeo_BezierProject\x64\Release\ArnalAngerLeo_BezierProject.exe
