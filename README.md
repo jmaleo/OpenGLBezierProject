@@ -4,7 +4,7 @@ This project is a little application of Bezier Curve and Surface, written in C++
 You may interact with a 3D scene, to visualise curves or surfaces randomly generated.
 
 # The scene contains
-  - 3 lights points, visualised as points (there is 1 light at the back of the scene, and 2 behind the view.
+  - 3 light sources, visualised as points (there is 1 light at the back of the scene, and 2 behind the view.
   - Following the curve mode (Curve with nbLines lines, Curve with nbLength for each lines, Surface) you'll have different visualisations :
       For each visualisation, you can see the control points as orange.
       -> Curve (both) : Lines correspond to the position of each points
