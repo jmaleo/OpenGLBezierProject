@@ -40,4 +40,4 @@ There is also a limitation for the curve control points.
 
 # Images of the application
 
-![SimpleCurve](application/SimpleCurve.PNG)
+![SimpleCurve](https://raw.githubusercontent.com/jmaleo/OpenGLBezierProject/master/.github/application/BezierCurge.PNG)
