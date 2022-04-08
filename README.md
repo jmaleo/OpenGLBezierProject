@@ -40,4 +40,4 @@ There is also a limitation for the curve control points.
 
 # Images of the application
 
-![SimpleCurve](Application/SimpleCurve.PNG)
+![SimpleCurve](Application/SimpleCurve.PNG) ![CurveWithSameLength](Application/SimpleCurveWithSameLength.PNG)
