@@ -48,4 +48,4 @@ There is also a limitation for the curve control points.
 
 ![SurfaceWithNormals](Application/SurfaceWithNormals.PNG)
 
-! [SurfaceNormal](Application/SurfaceNormals.PNG)
+![SurfaceNormal](Application/SurfaceNormals.PNG)
