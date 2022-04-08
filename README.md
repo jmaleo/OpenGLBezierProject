@@ -36,3 +36,8 @@ There is also a limitation for the curve control points.
 
 ## Problems
  - For the curve, by using a curve where each lines have the same length, there is a problem, and the last line just connect to the last control point, without taking into account if it corresponds to the length mentioned.
+
+
+# Images of the application
+
+![plot](./application/SimpleCurve.PNG)
