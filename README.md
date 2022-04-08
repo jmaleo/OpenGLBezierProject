@@ -41,3 +41,11 @@ There is also a limitation for the curve control points.
 # Images of the application
 
 ![SimpleCurve](Application/SimpleCurve.PNG) ![CurveWithSameLength](Application/SimpleCurveWithSameLength.PNG)
+
+![SurfaceWithTriangles](Application/SurfaceWithTriangles.PNG)
+
+![SurfaceClean](Application/SurfaceClean.PNG)
+
+![SurfaceWithNormals](Application/SurfaceWithNormals.PNG)
+
+! [SurfaceNormal](Application/SurfaceNormals.PNG)
