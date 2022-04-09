@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{c3fd9269-9aad-4e42-9c97-fe1c546bdcd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Outils">
+      <UniqueIdentifier>{158057ec-b537-4e0a-8c9b-5606115fb901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{4b9ca5cb-6ba4-4ee7-a5cc-4f3894fb2a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Outils\Bezier">
+      <UniqueIdentifier>{78e114ff-fabd-401d-adea-0461c1000be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Outils\Mesh">
+      <UniqueIdentifier>{056ae905-bce1-473e-9943-95c72fe15417}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Librairie Visual Studio\glad.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="simpleFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="simpleVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentCurve.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="vertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentControl.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentNormal.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="vertexLight.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentLight.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Outils</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierCurve.h">
+      <Filter>Outils\Bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierCurveMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlCurveMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierSurface.h">
+      <Filter>Outils\Bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierSurfaceMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlSurfaceMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="lightMesh.h">
+      <Filter>Outils\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Lights.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
