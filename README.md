@@ -27,7 +27,7 @@ Be careful : there is the compiled application on the application directory. If 
 - By pressing R you may generate a new set of random control points.
 - During the curve scene, you may play with right or left arrow to change parameters as nbLength or nbLines.
 - During the surface scene, you can press on N to see normal as lines or normal as color (interpoled).
-
+- During the surface scene, you can press L to toggle wireframe display. 
 
 
 # Notes 
