@@ -84,8 +84,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Programme &amp; Jeux\Informatique\Librairie Visual Studio\Include;$(IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>D:\Programme &amp; Jeux\Informatique\Librairie Visual Studio\Libs;$(LibraryPath);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)\libs;$(LibraryPath);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
