@@ -2,7 +2,7 @@
 
 This project is a little application of Bezier Curve and Surface, written in C++ with the help of the openGL Library.
 You may interact with a 3D scene, to visualise curves or surfaces randomly generated.
-Be careful : there is the compiled application on the application directory. If you want to compile the algorithme, you need to import the project into Visual Studio Code for example.
+- Be careful : there is the compiled application on the application directory. If you want to compile the algorithm, you need to import the project into Visual Studio.
 
 # The scene contains
   - 3 light sources, visualised as points (there is 1 light at the back of the scene, and 2 behind the view).
