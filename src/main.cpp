@@ -24,6 +24,8 @@
 #include <time.h>
 #include <iostream>
 
+#include "CMakeConfig.h"
+
 void showPrompt();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -164,12 +166,12 @@ int main()
 	normalMeshColored->setupMesh();
 
     // Shaders instanciation
-    ShaderProgram* shaderLights = new ShaderProgram("vertexLight.glsl", "fragmentLight.glsl");
+    ShaderProgram* shaderLights = new ShaderProgram((SHADER_DIR+std::string("vertexLight.glsl")).c_str(), (SHADER_DIR+std::string("fragmentLight.glsl")).c_str());
 
-    ShaderProgram* shaderSurface = new ShaderProgram("vertexShader.glsl", "fragmentShader.glsl");
-    ShaderProgram* shaderControl = new ShaderProgram("vertexShader.glsl", "fragmentControl.glsl");
-	ShaderProgram* shaderNormalLines = new  ShaderProgram("vertexShader.glsl", "fragmentCurve.glsl");
-    ShaderProgram* shaderNormalColored = new  ShaderProgram("vertexShader.glsl", "fragmentNormal.glsl");
+    ShaderProgram* shaderSurface = new ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentShader.glsl")).c_str());
+    ShaderProgram* shaderControl = new ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentControl.glsl")).c_str());
+	ShaderProgram* shaderNormalLines = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentCurve.glsl")).c_str());
+    ShaderProgram* shaderNormalColored = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentNormal.glsl")).c_str());
 
 	
     while (!glfwWindowShouldClose(window))
@@ -389,4 +391,5 @@ void showPrompt() {
 	cout << "You can PRESS R to generate random control points" << endl;
 	cout << "ALSO, for curves you may play with right or left arrow to change parameters as nb of Lines or offSet" << endl;
 	cout << "/////////////////////////////////////////////////////////////////// " <<endl;
+
 }

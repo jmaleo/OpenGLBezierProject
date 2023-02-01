@@ -11,16 +11,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
+# Définir le répertoire de destination pour les fichiers de shaders
+set(SHADER_DIR ${EXECUTABLE_OUTPUT_PATH}/shaders/)
+
+# Copier les fichiers de shaders à partir du répertoire source vers le répertoire de construction
+file(GLOB_RECURSE SHADER_SOURCES "${CMAKE_SOURCE_DIR}/src/shaders/*.glsl")
+file(COPY ${SHADER_SOURCES} DESTINATION ${SHADER_DIR})
+
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glm)
 
 
+configure_file(
+    "${CMAKE_SOURCE_DIR}/CMakeConfig.h.in"
+    "${CMAKE_SOURCE_DIR}/src/CMakeConfig.h"
+)
 
 find_package(OpenGL REQUIRED)
 
 FILE(GLOB_RECURSE folder_source ${CMAKE_SOURCE_DIR}/src/*.cpp)
 FILE(GLOB_RECURSE folder_header ${CMAKE_SOURCE_DIR}/src/*.hpp)
 FILE(GLOB_RECURSE folder_header ${CMAKE_SOURCE_DIR}/src/*.h)
+FILE(GLOB_RECURSE folder_header ${EXECUTABLE_OUTPUT_PATH}/*.h)
 FILE(GLOB_RECURSE shader_files ${CMAKE_SOURCE_DIR}/src/shaders/*.glsl)
 
 set(glad_file ${CMAKE_SOURCE_DIR}/lib/glad/src/glad.c)
@@ -33,9 +45,12 @@ include_directories( GLOB_RECURSE
     ${CMAKE_SOURCE_DIR}/lib/imgui/imgui)
     # ${CMAKE_SOURCE_DIR}/lib/imgui/imgui/backends)
 
-add_executable(${CMAKE_PROJECT_NAME} ${folder_source} ${shader_files} ${glad_file} ${folder_header} ${imgui_files})
+# Ajouter le répertoire des shaders à l'exécutable
+include_directories(${SHADER_DIR})
 
-file(COPY ${shader_files} DESTINATION "shaders")
+
+add_executable(${CMAKE_PROJECT_NAME} ${folder_source} ${glad_file} ${folder_header} ${imgui_files} )
+
 
 set(EXT_LIBS ${OPENGL_LIBRARIES} glfw)
 

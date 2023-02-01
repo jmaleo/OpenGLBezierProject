@@ -1,0 +1,6 @@
+#ifndef CMAKECONFIG_H
+#define CMAKECONFIG_H
+
+#define SHADER_DIR "@SHADER_DIR@"
+
+#endif // CMAKECONFIG_H
