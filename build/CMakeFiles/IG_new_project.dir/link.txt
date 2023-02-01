@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -pedantic -rdynamic CMakeFiles/IG_new_project.dir/src/ShaderProgram.cpp.o CMakeFiles/IG_new_project.dir/src/main.cpp.o CMakeFiles/IG_new_project.dir/lib/glad/src/glad.c.o -o ../bin/IG_new_project  -lGL -lGLU lib/glfw/src/libglfw3.a -Wl,-Bstatic -lrt -Wl,-Bdynamic -lm -ldl -lX11 
