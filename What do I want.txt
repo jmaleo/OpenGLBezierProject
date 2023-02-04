@@ -1,0 +1,32 @@
+Donc l'idée du projet : 
+
+
+Dans la classe _Interface.hpp : On va pouvoir contrôler tout nos paramètres. A l'intérieur, on va lui donner une scène (que l'on va pouvoir modifier si on le souhaite) => _Scene.hpp. 
+
+Cette scène est constituée de divers choses : 
+	- De lumières, => _Lights.hpp -> pouvoir les cocher ou non pour les afficher ou non
+	- D'objects, => _Object.hpp -> same.
+	 
+
+On va chercher a modifier les GLSL pour avoir des interactions, différentes selon les paramètres données. => _ControlGLSL.hpp
+
+L'objectif de la class render, est d'avoir différentes façon d'afficher notre scène.
+	=> A voir si c'est pertinent d'avoir notre controleur de glsl ici.
+	
+
+J'aimerais que l'on ai un panel principal permettant de contrôler nos actions. 
+A l'intérieur, il y aurait par exemple un bouton "Générée une scène random" => avec 5 cubes agencés dans 1 plus gros, et quelques lumières. 
+
+	=> La, il y aurait alors deux fenêtres glissantes, l'une pour les objets, et l'autres pour les lumières. 
+	=> Autre fenêtre pour contrôler les GLSL.
+	
+	
+J'AIMERAIS BIEN avoir un système de picking pour modifier l'emplacement des objets, avec, par exemple, un moyen du style : je click (ça me sélectionne mon objet), et j'appuie sur une touche + molette pour faire une translation selon un axe).
+
+
+Premièrement : Je veux générer cette scène et toute l'interface qui va bien.
+
+
+
+L'IDEE RESTE DE FAIRE DU BLUR EFFECT
+-> IL ME FAUT EGALEMENT UN MODEL de MICROFACETTEs
