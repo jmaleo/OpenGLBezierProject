@@ -24,6 +24,10 @@
 #include <time.h>
 #include <iostream>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include "CMakeConfig.h"
 
 void showPrompt();
@@ -101,6 +105,7 @@ int main()
         return -1;
     }
 
+
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -118,6 +123,12 @@ int main()
 
     srand(time(NULL));
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                                                                                                                                                     //
@@ -173,9 +184,16 @@ int main()
 	ShaderProgram* shaderNormalLines = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentCurve.glsl")).c_str());
     ShaderProgram* shaderNormalColored = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentNormal.glsl")).c_str());
 
-	
+    bool show_another_window = true;
+
     while (!glfwWindowShouldClose(window))
     {
+
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -218,8 +236,22 @@ int main()
 		// Just press P to show triangles or facettes
         glPolygonMode(GL_FRONT_AND_BACK, lines);
 
+        ImGui::SetNextWindowPos(ImVec2(0,0));
+        ImGui::Begin("Example Window", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+        // ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        ImGui::Text("Hello from another window!");
+        if (ImGui::Button("Close Me"))
+            show_another_window = false;
+        ImGui::End();
+        
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
-        glfwPollEvents();
+
     }
      
     //SURFACE
@@ -231,6 +263,11 @@ int main()
     delete shaderNormalLines;
     delete shaderNormalColored;
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
