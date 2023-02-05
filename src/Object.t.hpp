@@ -1,0 +1,57 @@
+#pragma once
+#include "_Object.hpp"
+
+/**
+ * @brief Destroy the My Object< Vec Type>:: My Object object
+ * 
+ * @tparam VecType 
+ */
+template<typename VecType>
+MyObject<VecType>::~MyObject(){
+    m_vertices.clear();
+    m_indices.clear();
+    m_normales.clear();
+    m_nb_vertices = 0;
+}
+
+/**
+ * @brief set the vertices of my object.
+ * 
+ * @tparam VecType 
+ * @param list_vertices 
+ */
+template <typename VecType>
+void MyObject<VecType>::setVertices ( std::vector < VecType > list_vertices ){
+    m_vertices = list_vertices;
+    m_nb_vertices = m_vertices.size();
+}
+
+/**
+ * @brief Set the normales of my object
+ * 
+ * @tparam VecType 
+ * @param list_normales 
+ */
+template <typename VecType>
+void MyObject<VecType>::setNormales( std::vector < VecType > list_normales ){
+    if ( list_normales.size() != m_nb_vertices ) {
+        std::cerr << "You can't add a list of normales for a different number of vertices." << std::endl;
+        return;
+    }
+    m_normales = list_normales;
+}
+
+/**
+ * @brief Set the colors of my object
+ * 
+ * @tparam VecType 
+ * @param list_colors 
+ */
+template <typename VecType>
+void MyObject<VecType>::setColors( std::vector < glm::vec4 > list_colors ){
+    if ( list_colors.size() != m_nb_vertices ) {
+        std::cerr << "You can't add a list of normales for a different number of vertices." << std::endl;
+        return;
+    }
+    m_colors = list_colors;
+}

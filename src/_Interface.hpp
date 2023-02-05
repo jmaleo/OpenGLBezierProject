@@ -15,17 +15,50 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "Scene.t.hpp"
+#include "utils.t.hpp"
 
+
+
+// J'ai besoin pour cette classe de pouvoir TOUT panipuler, puisque je veux que l'utilisateur intéragisse avec TOUT.
+template <typename VecType>
 class ImGuiInterface {
     public:
 
-        ImGuiInterface(){
-            std::cout << "You choose the classic interface." << std::endl;
+        ImGuiInterface(){ };
+
+        ImGuiInterface( Scene<VecType>* scene ){
+            m_scene = scene;
         };
         
         void draw();
     
     private:
 
-        void _drawCurve();
+        // Function that displays the entire thing.
+        void _drawInterface();
+
+        // Function that displays the pannel for the current scene.
+        void _drawScene();
+
+        // Function that displays the pannel for Objects.
+        void _drawObject();
+
+        // Function that displays the pannel for lights.
+        void _drawLights();
+        
+        // Indicates the size (width) of a widget. 
+        int m_size_width = 200;
+        int m_size_offset = 10;
+
+        // Variable that indicates where is the next widget pos.
+        int m_begin_win = m_size_offset;
+
+        // Variables indicating the visibility of windows.
+        bool m_scene_visible = false;
+        bool m_lights_visible = false;
+        bool m_objects_visible = false;
+
+        // Variables
+        Scene<VecType>* m_scene;
 };

@@ -30,6 +30,9 @@
 
 #include "CMakeConfig.h"
 
+// #include "Object.t.hpp"
+#include "Interface.t.hpp"
+
 void showPrompt();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -186,6 +189,8 @@ int main()
 
     bool show_another_window = true;
 
+    ImGuiInterface<glm::vec3> myInterface = ImGuiInterface<glm::vec3>();
+
     while (!glfwWindowShouldClose(window))
     {
 
@@ -236,13 +241,7 @@ int main()
 		// Just press P to show triangles or facettes
         glPolygonMode(GL_FRONT_AND_BACK, lines);
 
-        ImGui::SetNextWindowPos(ImVec2(0,0));
-        ImGui::Begin("Example Window", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-        // ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-            show_another_window = false;
-        ImGui::End();
+        myInterface.draw();
         
         ImGui::Render();
         int display_w, display_h;
@@ -324,30 +323,6 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
         curveChange = true;
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && curveParamChange) {
-        if (showCurve == 0)
-            nbLine += 1;
-        if (showCurve == 1)
-            offSetLine = (offSetLine >= 10.0f)?1.0f:offSetLine + 0.05f;
-        curveParamChange = false;
-        updateCurve();
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && curveParamChange) {
-        curveParamChange = false;
-        if (showCurve == 0)
-            nbLine = (nbLine == 1)?1:nbLine-1;
-        if (showCurve == 1)
-            offSetLine = (offSetLine <= 0.05f) ? 0.05f : offSetLine - 0.05f;
-        updateCurve();
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_RELEASE)
-        curveParamChange = true;
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && randomChange) {
-        randomChange = false;
-        controlChange();
-    }
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE)
-		randomChange = true;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
