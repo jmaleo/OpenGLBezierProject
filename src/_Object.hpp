@@ -13,43 +13,61 @@ template<typename VecType>
 class MyObject{
 
     public : 
-        MyObject () {
-            std::cout << "J'ai enregistrer mon objet" << std::endl;
-        }
-        
+        MyObject ( int id ) { m_id = id; }
+        MyObject ( int id, std::vector < VecType > list_vertices, std::vector < VecType > list_normales, glm::vec3 color, std::vector < unsigned int > list_indices );
+        MyObject ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices );
+
         virtual ~MyObject ();
 
         // // //
         // SETTERS
         // // //
+        void setId (int id) { m_id = id; }
 
         void setVertices ( std::vector < VecType > list_vertices );
 
-        void setNormales ( std::vector < VecType > list_normales);
+        void setNormales ( std::vector < VecType > list_normales );
 
-        void setColors ( std::vector < glm::vec4 > list_colors);
+        void setColor ( glm::vec3 color );
         
-        void setIndices ( std::vector < int > list_indices ) { m_indices = list_indices; }
+        void setIndices ( std::vector < unsigned int > list_indices ) { m_indices = list_indices; }
 
 
         // // //
         // GETTERS
         // // //
+        int getId () { return m_id; }
 
         std::vector < VecType > getVertices () { return m_vertices; }
         
         std::vector < VecType > getNormales () { return m_normales; }
         
-        std::vector < int > getIndices () { return m_indices; }
+        std::vector < unsigned int > getIndices () { return m_indices; }
 
-        std::vector < glm::vec4 > getColors () { return m_colors; }
+        glm::vec3 getColor () { return m_color; }
+
+        unsigned int* get_VAO () { return &VAO; };
+
+        unsigned int* get_VBOvertices () { return &VBOvertices; };
+
+        unsigned int* get_VBOnormales () { return &VBOnormales; };
+
+        unsigned int* get_EBO () { return &EBO; };
 
     private : 
+        int m_id = -1;
         int m_nb_vertices = 0;
+        unsigned int VAO, VBOvertices, VBOnormales, EBO;
         std::vector < VecType > m_vertices;
         std::vector < VecType > m_normales;
-        std::vector <glm::vec4 > m_colors;
-        std::vector < int > m_indices;
+        std::vector < unsigned int > m_indices;
+
+
+        // Parametres de matériaux
+        glm::vec3 m_color; // Albedo
+        float metallic = 0.0f;
+        float roughness = 0.0f;
+        float ao = 0.0f;
 
 
 };

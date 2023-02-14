@@ -7,11 +7,13 @@
  * @tparam VecType 
  */
 template<typename VecType>
-void ImGuiInterface<VecType>::draw(){
+void ImGuiInterface<VecType>::draw(float width, float height){
     _drawInterface();
     _drawScene();
     _drawObject();
     _drawLights();
+
+    _drawFrame(width, height);
 }
 
 /**
@@ -109,4 +111,13 @@ void ImGuiInterface<VecType>::_drawLights(){
 
     ImGui::End();
 
+}
+
+template<typename VecType>
+void ImGuiInterface<VecType>::_drawFrame(float width, float height){
+    if (!m_scene_visible){ return; }
+    if (m_objects_visible)
+        m_renderScene->drawObjects(width, height);
+    if (m_lights_visible)
+        m_renderScene->drawLights(width, height);
 }

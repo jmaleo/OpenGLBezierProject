@@ -2,6 +2,31 @@
 #include "_Object.hpp"
 
 /**
+ * @brief Constructor.
+ * 
+ * @tparam VecType 
+ */
+template<typename VecType>
+MyObject<VecType>::MyObject ( int id,  std::vector < VecType > list_vertices, 
+    std::vector < VecType > list_normales, 
+        glm::vec3 color, 
+            std::vector < unsigned int > list_indices ){
+    m_id = id;
+    setVertices(list_vertices);
+    setNormales(list_normales);
+    setColor(color);
+    setIndices(list_indices);
+}
+
+template<typename VecType>
+MyObject<VecType>::MyObject ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices ){
+    
+    m_id = id;
+    setVertices(list_vertices);
+    setIndices(list_indices);
+}
+
+/**
  * @brief Destroy the My Object< Vec Type>:: My Object object
  * 
  * @tparam VecType 
@@ -48,10 +73,6 @@ void MyObject<VecType>::setNormales( std::vector < VecType > list_normales ){
  * @param list_colors 
  */
 template <typename VecType>
-void MyObject<VecType>::setColors( std::vector < glm::vec4 > list_colors ){
-    if ( list_colors.size() != m_nb_vertices ) {
-        std::cerr << "You can't add a list of normales for a different number of vertices." << std::endl;
-        return;
-    }
-    m_colors = list_colors;
+void MyObject<VecType>::setColor( glm::vec3 color ){
+    m_color = color;
 }

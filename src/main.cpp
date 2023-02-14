@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include <time.h>
 
 #include "ShaderProgram.h"
 #include "Camera.h"
@@ -30,17 +31,21 @@
 
 #include "CMakeConfig.h"
 
-// #include "Object.t.hpp"
-#include "Interface.t.hpp"
 
-void showPrompt();
+#include "Interface.t.hpp"
+#include "Scene.t.hpp"
+#include "Object.t.hpp"
+#include "Render.t.hpp"
+#include "utils.t.hpp"
+#include "Render_scene.t.hpp"
+
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-void updateCurve();
-void controlChange();
 
 ControlCurveMesh* controlCurveMesh;
 
@@ -61,32 +66,16 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 bool pressedMouse = false;
 
+
+RenderScene<glm::vec3>* myRender = nullptr;
+ImGuiInterface<glm::vec3>* myInterface = nullptr;
+
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 int lines = GL_LINE;
 bool lineChange = true;
-
-bool showParam = false;
-bool paramChange = true;
-
-int showNormal = 0;
-bool normalChange = true;
-
-bool showBezier = true;
-bool bezierChange = true;
-
-int showCurve = 0;
-bool curveChange = true;
-
-bool curveParamChange = true;
-float offSetLine = 0.5f;
-int nbLine = 5;
-
-bool randomChange = true;
-
-
 
 int main()
 {
@@ -132,27 +121,9 @@ int main()
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//                                                                                                                                                     //
-	//         HOW TO USE THIS PROGRAM                                                                                                                     //
-	//  By pressing C on your keyboard, you can change between a bezier curve with X lines, a bezier curve with lines of Y length and a bezier surface.    //
-	//  By pressing P you can see the control polynom.                                                                                                     //
-	//  During the surface scene, you can press on N to see normal as lines or normal as color (interpoled).                                               //
-    //  You can also, at any time, press on B to see or not Curve or Surface.                                                                              //
-    //  You can PRESS R to generate random control points                                  	  						                     			       //
-    //                                          																                                           //
-    //  ALSO, for curves you may play with right or left arrow to change parameters as nb of Lines or offSet                                               //
-    //                                                                                                                                                     //
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    showPrompt();
-
 
 	// LIGHTS coming from lights.h
     vector<glm::vec3> lights = lightsVector3();
-
-	
-   	//Be carefull, controlPoints coming from Objects.h
 	
 	// Bezier SURFACE
 	glm::vec3 surfaceColor = glm::vec3(0.5f, 0.7f, 0.7f);
@@ -167,7 +138,6 @@ int main()
     normalMeshColored = new NormalMesh(bSurfaceMesh->getVertices(), bSurfaceMesh->getIndices(), bSurfaceMesh->getNormales(), lights, &camera);
 
     //LIGHTS
-
     LightMesh* lightMesh = new LightMesh(bSurfaceMesh->getLightsPos(), bSurfaceMesh->getLightsColor(), &camera);
 
     //LIGHT
@@ -189,11 +159,36 @@ int main()
 
     bool show_another_window = true;
 
-    ImGuiInterface<glm::vec3> myInterface = ImGuiInterface<glm::vec3>();
+
+    /**
+     *  
+     * 
+     * 
+     *   DEBUG DEBUG DEBUG DEBUG
+     * 
+     * 
+     */
+
+    /*
+        Dans l'idée : - On setup une caméra.
+                      - On setup une scene. -> Objets / lights
+                      - On crée une RenderScene, qui permettra à l'UI d'intéragir avec la scene.
+                      - On setup l'UI.
+                      - C'est gagné.
+    */
+
+    // Scene<glm::vec3> myScene;
+    Scene<glm::vec3>* myScene = generateCubeScene(&camera, glm::vec3(-50.0f,50.0f,-50.0f), 100.0f, 2, 5);
+    
+    myRender = new RenderScene<glm::vec3>(myScene);
+    myInterface = new ImGuiInterface<glm::vec3>(myRender);
+
+    myRender->setUpObjects();
+    myRender->setUpLights();
+    
 
     while (!glfwWindowShouldClose(window))
     {
-
         glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -211,38 +206,15 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
 
-		
-        // CURVE
-        if (showCurve == 0 || showCurve == 1) {
-            //Polynome de control
-			if (showParam)
-                controlCurveMesh->draw(shaderControl, float(SCR_WIDTH), float(SCR_HEIGHT));
-        }
-        else {
-            //Polynome de control
-            if (showParam)
-                controlSurfaceMesh->draw(shaderControl, float(SCR_WIDTH), float(SCR_HEIGHT));
-            //NORMALS
-            if (showNormal > 0) {
-                //SHOW NORMAL AS LINES
-                if (showNormal == 1)
-                    normalMeshLines->draw(shaderNormalLines, float(SCR_WIDTH), float(SCR_HEIGHT));
-                // SHOW NORMAL AS COLOR
-                else
-                    normalMeshColored->draw(shaderNormalColored, float(SCR_WIDTH), float(SCR_HEIGHT));
-            }
-            // SHOW BEZIER SURFACE
-            if (showBezier)
-                bSurfaceMesh->draw(shaderSurface, (float)SCR_WIDTH, (float)SCR_HEIGHT);
-        }
 		//LIGHT
-        lightMesh->draw(shaderLights, float(SCR_WIDTH), float(SCR_HEIGHT));
+        // lightMesh->draw(shaderLights, float(SCR_WIDTH), float(SCR_HEIGHT));
 
-		// Just press P to show triangles or facettes
+		// Just press L to show triangles or facettes
         glPolygonMode(GL_FRONT_AND_BACK, lines);
 
-        myInterface.draw();
-        
+        myInterface->draw((float)SCR_WIDTH, (float)SCR_HEIGHT);
+        // myRender.draw_Object(&firstCube, shaderControl, (float)SCR_WIDTH, (float)SCR_HEIGHT);
+
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -261,6 +233,8 @@ int main()
     delete shaderControl;
     delete shaderNormalLines;
     delete shaderNormalColored;
+    delete myScene;
+    delete myInterface;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -299,30 +273,6 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_RELEASE)
         lineChange = true;
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && paramChange) {
-        showParam = (showParam) ? false : true;
-        paramChange = false;
-    }
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
-        paramChange = true;
-    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS && normalChange) {
-        showNormal = (showNormal + 1) % 3;
-        normalChange = false;
-    }
-    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_RELEASE)
-        normalChange = true;
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && bezierChange) {
-        showBezier = (showBezier) ? false : true;
-        bezierChange = false;
-    }
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE)
-        bezierChange = true;
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && curveChange) {
-        showCurve = (showCurve + 1) % 3;
-        curveChange = false;
-    }
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
-        curveChange = true;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
@@ -330,8 +280,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         pressedMouse = true;
         firstMouse = true;
     }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE){
         pressedMouse = false;
+    }
     
 }
 
@@ -364,44 +315,4 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-void updateCurve() {
-    if (showCurve == 2)
-        return;
-    if (showCurve == 0) {
-        cout << "nbLine = " << nbLine <<  endl;
-    }
-    else {
-        cout << "offSetLine = " << offSetLine << endl;
-    }
-}
-
-void controlChange() {
-    if (showCurve == 0 || showCurve == 1) {
-        vector <glm::vec3> controlPoints = randomPointsCurve();
-        controlCurveMesh->setControlPoints(controlPoints);		
-    }
-    else {
-		vector<vector<glm::vec3>> controlPoints = randomPointsSurface(10, 4);
-		bSurface->setControlPoints(controlPoints);
-        controlSurfaceMesh->setVertices(controlPoints);
-		bSurfaceMesh->setVertices(bSurface->getCurve());
-        normalMeshLines->setVerticesAndNormals(bSurfaceMesh->getVertices(), bSurfaceMesh->getNormales());
-        normalMeshColored->setVerticesAndNormals(bSurfaceMesh->getVertices(), bSurfaceMesh->getIndices(), bSurfaceMesh->getNormales());
-		
-    }
-}
-
-void showPrompt() {
-    cout << "/////////////////////////////////////////////////////////////////// " <<endl;
-    cout << "\t\t HOW TO USE THIS PROGRAM "<< endl;
-    cout << "By pressing C on your keyboard, you can change between a bezier curve with X lines, a bezier curve with lines of Y length and a bezier surface." << endl;
-    cout << "By pressing P you can see the control polynom." << endl;
-	cout << "During the surface scene, you can press on N to see normal as lines or normal as color (interpoled)." << endl;
-	cout << "You can also, at any time, press on B to see or not Curve or Surface." << endl;
-	cout << "You can PRESS R to generate random control points" << endl;
-	cout << "ALSO, for curves you may play with right or left arrow to change parameters as nb of Lines or offSet" << endl;
-	cout << "/////////////////////////////////////////////////////////////////// " <<endl;
-
 }

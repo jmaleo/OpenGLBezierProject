@@ -7,9 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 
 #include "Object.t.hpp"
 #include "Scene.t.hpp"
+#include "Camera.h"
 
 /**
  * @brief 
@@ -19,7 +21,7 @@
  * @param nb_lights 
  * @return MyObject<glm::vec3> 
  */
-Scene<glm::vec3> generateCubeScene (glm::vec3 position_min, glm::vec3 position_max, int nb_cubes, int nb_lights);
+Scene<glm::vec3>* generateCubeScene (Camera* cam, glm::vec3 position, float length, int nb_cubes, int nb_lights);
 
 
 /**
@@ -30,18 +32,19 @@ Scene<glm::vec3> generateCubeScene (glm::vec3 position_min, glm::vec3 position_m
  * @param nb_lights 
  * @return MyObject<glm::vec3> 
  */
-Scene<glm::vec3> generateSphereScene (glm::vec3 position_min, glm::vec3 position_max, int nb_sphere, int nb_lights);
+Scene<glm::vec3>* generateSphereScene (glm::vec3 position_min, glm::vec3 position_max, int nb_sphere, int nb_lights);
 
 /**
  * @brief 
  * 
- * @param position_max Position of the top left front cube.
- * @param position_min Position of the bottom right back cube. 
+ * @param id
+ * @param position Position of the top left back cube.
+ * @param length length of one edge of the cube.
  * @param colors Unique color for the entire cube.
  * @param normal_dir Direction of the normal (interior => false       exterior => true)
  * @return MyObject<glm::vec3> 
  */
-MyObject<glm::vec3> generateCube (glm::vec3 position_max, glm::vec3 position_min, glm::vec4 col, bool normal_dir);
+MyObject<glm::vec3>* generateCube (int id, glm::vec3 position, float length, glm::vec3 col, bool normal_dir);
 
 /**
  * @brief Generates cube (or rectangular shape)
@@ -59,7 +62,7 @@ std::vector<glm::vec3> generateCubeVertices(glm::vec3 position, float length1, f
  * @param vertices 
  * @return std::vector<int> 
  */
-std::vector<int> generateCubeIndices ();
+std::vector<unsigned int> generateCubeIndices ();
 
 /**
  * @brief Generates normales of given vertices, for a cube of prism.
@@ -72,20 +75,11 @@ std::vector <glm::vec3> generateCubeNormales (std::vector <glm::vec3> vertices, 
 /**
  * @brief 
  * 
+ * @param id
  * @param position Position of the sphere.
  * @param radius Radius of the Sphere
  * @param colors Unique color for the entire sphere
  * @param normal_dir Direction of the normal (interior => false       exterior => true)
  * @return MyObject<glm::vec3> 
  */
-MyObject<glm::vec3> generateSphere (glm::vec3 position, float radius, glm::vec4 col, bool normal_dir);
-
-
-/**
- * @brief Generates a vector containing nb_elem of the same value (color).
- * 
- * @param col 
- * @param nb_elem 
- * @return std::vector<glm::vec4> 
- */
-std::vector<glm::vec4> generateColors (glm::vec4 col, int nb_elem);
+MyObject<glm::vec3>* generateSphere (int id, glm::vec3 position, float radius, glm::vec3 col, bool normal_dir);

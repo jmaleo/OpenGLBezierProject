@@ -9,9 +9,8 @@ out vec4 FragColor;
 uniform vec3 cameraPosition;
 uniform vec3 objectColor;
 
-
-uniform vec3 lightPos[3];
-uniform vec3 lightColor[3];
+uniform vec3 lightPos[10];
+uniform vec3 lightColor[10];
 
 float ambientStrength = 0.1;
 

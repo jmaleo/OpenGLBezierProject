@@ -16,6 +16,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Scene.t.hpp"
+#include "Render_scene.t.hpp"
 #include "utils.t.hpp"
 
 
@@ -25,13 +26,11 @@ template <typename VecType>
 class ImGuiInterface {
     public:
 
-        ImGuiInterface(){ };
-
-        ImGuiInterface( Scene<VecType>* scene ){
-            m_scene = scene;
+        ImGuiInterface( RenderScene<VecType>* renderScene ){
+            m_renderScene = renderScene;
         };
         
-        void draw();
+        void draw(float width, float height);
     
     private:
 
@@ -46,6 +45,9 @@ class ImGuiInterface {
 
         // Function that displays the pannel for lights.
         void _drawLights();
+
+        // Function that draw the openGL frame, following the interface.
+        void _drawFrame(float width, float heigth);
         
         // Indicates the size (width) of a widget. 
         int m_size_width = 200;
@@ -55,10 +57,10 @@ class ImGuiInterface {
         int m_begin_win = m_size_offset;
 
         // Variables indicating the visibility of windows.
-        bool m_scene_visible = false;
-        bool m_lights_visible = false;
-        bool m_objects_visible = false;
+        bool m_scene_visible = true;
+        bool m_lights_visible = true;
+        bool m_objects_visible = true;
 
         // Variables
-        Scene<VecType>* m_scene;
+        RenderScene<VecType>* m_renderScene;
 };
