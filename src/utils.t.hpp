@@ -2,6 +2,7 @@
 
 #include "_utils.hpp"
 
+
 /**
  * @brief 
  * TODO
@@ -10,7 +11,38 @@
  * @param nb_lights 
  * @return Scene<glm::vec3>
  */
-Scene<glm::vec3>* generateCubeScene (Camera* cam, glm::vec3 position, float length, int nb_cubes, int nb_lights){
+Scene<glm::vec3>* generateCubeScene (Camera* cam){
+    // Maybe length = 20.0f to begin.
+    float length = 50;
+    float demi_length = length/2;
+
+    Scene<glm::vec3>* myScene = new Scene<glm::vec3>(cam);
+    MyObject<glm::vec3>* principalObj = generateCube (0, glm::vec3(-demi_length,demi_length,-demi_length), length, glm::vec3(0.2f,0.2f,0.2f), false);
+    MyObject<glm::vec3>* floor = generateCube (1, glm::vec3(-demi_length, -demi_length/5, -demi_length), length, glm::vec3(0.8f,0.2f,0.2f), true);
+    MyObject<glm::vec3>* leftCube = generateCube (2, glm::vec3(-length/4, demi_length/8, -demi_length), length/5, glm::vec3(0.8f,0.5f,0.1f), true);
+    MyObject<glm::vec3>* rightCube = generateCube (3, glm::vec3(length/8, demi_length/8, -demi_length), length/8, glm::vec3(0.1f,0.6f,0.8f), true);
+
+    myScene->addObject(principalObj);
+    myScene->addObject(floor);
+    myScene->addObject(leftCube);
+    myScene->addObject(rightCube);
+
+    myScene->addLight(new Light<glm::vec3> (0, glm::vec3(-length/4, length/8, -length/3), glm::vec3(0.1f, 0.1f, 0.7f)));
+    myScene->addLight(new Light<glm::vec3> (1, glm::vec3(length/4, length/8, -length/3), glm::vec3(0.7f, 0.1f, 0.1f)));
+    myScene->addLight(new Light<glm::vec3> (2, glm::vec3(0, length/8.5, -length/3), glm::vec3(0.1f, 0.7f, 0.1f)));
+
+    return myScene;
+}
+
+/**
+ * @brief 
+ * TODO
+ * 
+ * @param nb_cubes 
+ * @param nb_lights 
+ * @return Scene<glm::vec3>
+ */
+Scene<glm::vec3>* generateRandomCubeScene (Camera* cam, glm::vec3 position, float length, int nb_cubes, int nb_lights){
     // Maybe length = 20.0f to begin.
     Scene<glm::vec3>* myScene = new Scene<glm::vec3>(cam);
     MyObject<glm::vec3>* principalObj = generateCube (0, glm::vec3(-length/2,length/2,-length/2), length, glm::vec3(0.2f,0.2f,0.2f), false);

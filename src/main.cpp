@@ -10,14 +10,6 @@
 
 #include "ShaderProgram.h"
 #include "Camera.h"
-#include "BezierSurface.h"
-#include "BezierSurfaceMesh.h"
-#include "ControlCurveMesh.h"
-#include "ControlSurfaceMesh.h"
-#include "lightMesh.h"
-#include "NormalMesh.h"
-#include "Objects.h"
-#include "Lights.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -47,14 +39,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-ControlCurveMesh* controlCurveMesh;
-
-BezierSurface* bSurface;
-BezierSurfaceMesh* bSurfaceMesh;
-ControlSurfaceMesh* controlSurfaceMesh;
-NormalMesh* normalMeshLines; 
-NormalMesh* normalMeshColored;
-
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -65,7 +49,6 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 bool pressedMouse = false;
-
 
 RenderScene<glm::vec3>* myRender = nullptr;
 ImGuiInterface<glm::vec3>* myInterface = nullptr;
@@ -122,44 +105,6 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-	// LIGHTS coming from lights.h
-    vector<glm::vec3> lights = lightsVector3();
-	
-	// Bezier SURFACE
-	glm::vec3 surfaceColor = glm::vec3(0.5f, 0.7f, 0.7f);
-    vector<vector<glm::vec3>> control = randomPointsSurface(10.0f, 4.0f);
-    bSurface = new BezierSurface(control, surfaceColor);
-
-
-	// SURFACE MESH
-    bSurfaceMesh = new BezierSurfaceMesh(bSurface->getCurve(), bSurface->getSurfaceColor(), lights, &camera);
-    controlSurfaceMesh = new ControlSurfaceMesh(control, &camera);
-    normalMeshLines = new NormalMesh(bSurfaceMesh->getVertices(), bSurfaceMesh->getNormales(), &camera);
-    normalMeshColored = new NormalMesh(bSurfaceMesh->getVertices(), bSurfaceMesh->getIndices(), bSurfaceMesh->getNormales(), lights, &camera);
-
-    //LIGHTS
-    LightMesh* lightMesh = new LightMesh(bSurfaceMesh->getLightsPos(), bSurfaceMesh->getLightsColor(), &camera);
-
-    //LIGHT
-    lightMesh->setupMesh();
-	
-	//SURFACE
-    bSurfaceMesh->setupMesh();
-    controlSurfaceMesh->setupMesh();
-    normalMeshLines->setupMesh();
-	normalMeshColored->setupMesh();
-
-    // Shaders instanciation
-    ShaderProgram* shaderLights = new ShaderProgram((SHADER_DIR+std::string("vertexLight.glsl")).c_str(), (SHADER_DIR+std::string("fragmentLight.glsl")).c_str());
-
-    ShaderProgram* shaderSurface = new ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentShader.glsl")).c_str());
-    ShaderProgram* shaderControl = new ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentControl.glsl")).c_str());
-	ShaderProgram* shaderNormalLines = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentCurve.glsl")).c_str());
-    ShaderProgram* shaderNormalColored = new  ShaderProgram((SHADER_DIR+std::string("vertexShader.glsl")).c_str(), (SHADER_DIR+std::string("fragmentNormal.glsl")).c_str());
-
-    bool show_another_window = true;
-
-
     /**
      *  
      * 
@@ -178,7 +123,7 @@ int main()
     */
 
     // Scene<glm::vec3> myScene;
-    Scene<glm::vec3>* myScene = generateCubeScene(&camera, glm::vec3(-50.0f,50.0f,-50.0f), 100.0f, 2, 5);
+    Scene<glm::vec3>* myScene = generateCubeScene(&camera);
     
     myRender = new RenderScene<glm::vec3>(myScene);
     myInterface = new ImGuiInterface<glm::vec3>(myRender);
@@ -226,13 +171,6 @@ int main()
     }
      
     //SURFACE
-    bSurface->deleteSurface();
-	delete bSurface;
-	delete bSurfaceMesh;
-    delete controlSurfaceMesh;
-    delete shaderControl;
-    delete shaderNormalLines;
-    delete shaderNormalColored;
     delete myScene;
     delete myInterface;
 

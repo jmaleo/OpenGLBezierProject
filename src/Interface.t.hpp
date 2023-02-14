@@ -82,11 +82,32 @@ void ImGuiInterface<VecType>::_drawObject(){
 
     m_begin_win += (m_size_width + m_size_offset);
 
+    std::vector <int> ids = m_renderScene->getObjectIds();
+
     ImGui::SetNextWindowPos( ImVec2( m_begin_win, m_size_offset ) );
     ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
     ImGui::Begin("Test_Interface_OBJECTS", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     ImGui::Text("Fenêtre de l'interface pour les OBJECTS.");
+
+    for (int id : ids){
+        if (!m_selected_object || m_selected != id){
+            std::string button_name = "Object " + std::to_string(id);
+            if (ImGui::Button((button_name).c_str())){
+                m_selected = id;
+                m_selected_object = true;
+                m_selected_light = false;
+                m_renderScene->setObjectSelected (m_selected);
+            }
+        }
+        if (m_selected_object && m_selected == id){
+            if (ImGui::Button(("Unselect Object " + std::to_string(id)).c_str())){
+                m_selected = -1;
+                m_selected_object = false;
+                m_renderScene->setObjectSelected(-1);
+            }  
+        }
+    }
 
     ImGui::End();
 
@@ -103,11 +124,32 @@ void ImGuiInterface<VecType>::_drawLights(){
 
     m_begin_win += (m_size_width + m_size_offset);
 
+    std::vector <int> ids = m_renderScene->getLightIds();
+
     ImGui::SetNextWindowPos( ImVec2( m_begin_win, m_size_offset ) );
     ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
     ImGui::Begin("Test_Interface_LIGHTS", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     ImGui::Text("Fenêtre de l'interface pour les LUMIERES.");
+
+    for (int id : ids){
+        if (!m_selected_light || m_selected != id){
+            std::string button_name = "Light " + std::to_string(id);
+            if (ImGui::Button(button_name.c_str())){
+                m_selected = id;
+                m_selected_light = true;
+                m_selected_object = false;
+                m_renderScene->setLightSelected (m_selected);
+            }
+        }
+        if (m_selected_light && m_selected == id){
+            if (ImGui::Button(("Unselect Light " + std::to_string(id)).c_str())){
+                m_selected = -1;
+                m_selected_light = false;
+                m_renderScene->setLightSelected(-1);
+            }  
+        }
+    }
 
     ImGui::End();
 
@@ -116,8 +158,10 @@ void ImGuiInterface<VecType>::_drawLights(){
 template<typename VecType>
 void ImGuiInterface<VecType>::_drawFrame(float width, float height){
     if (!m_scene_visible){ return; }
-    if (m_objects_visible)
+    if (m_objects_visible){
         m_renderScene->drawObjects(width, height);
-    if (m_lights_visible)
+    }
+    if (m_lights_visible){
         m_renderScene->drawLights(width, height);
+    }
 }

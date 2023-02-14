@@ -8,10 +8,20 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <ctime>
+#include <cstdint>
 
 #include "Object.t.hpp"
 #include "Scene.t.hpp"
 #include "Camera.h"
+
+float initial_time = clock ();
+
+float timeExec() {
+  return (clock() - initial_time) / CLOCKS_PER_SEC * 1000;
+}
+
+Scene<glm::vec3>* generateCubeScene (Camera* cam);
 
 /**
  * @brief 
@@ -21,8 +31,7 @@
  * @param nb_lights 
  * @return MyObject<glm::vec3> 
  */
-Scene<glm::vec3>* generateCubeScene (Camera* cam, glm::vec3 position, float length, int nb_cubes, int nb_lights);
-
+Scene<glm::vec3>* generateRandomCubeScene (Camera* cam, glm::vec3 position, float length, int nb_cubes, int nb_lights);
 
 /**
  * @brief 

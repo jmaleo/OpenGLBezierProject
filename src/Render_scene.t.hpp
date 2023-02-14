@@ -32,15 +32,88 @@ void RenderScene<VecType>::drawObjects(float width, float height){
     std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
     std::vector <Light<VecType>*> lights = m_myScene->getListLights();
     for (auto obj : objs){
-        // m_render->draw_Object(obj, m_shaderControl, width, height);
-        m_render->draw_Object(obj, lights, m_shaderTest, width, height);
+        if (!m_selected_object || m_selected != obj->getId())
+            m_render->draw_Object(obj, lights, m_shaderObj, width, height);
     }
+    if (m_selected_object)
+        m_drawObjSelection(m_selected, width, height);
 } 
 
 template<typename VecType>
 void RenderScene<VecType>::drawLights(float width, float height){
     std::vector <Light<VecType>*> lights = m_myScene->getListLights();
     for (auto light : lights){
-        m_render->draw_Light(light, m_shaderLight, width, height);
+        if (!m_selected_light || m_selected != light->getId())
+            m_render->draw_Light(light, m_shaderLight, width, height);
     }
+    if (m_selected_light)
+        m_drawLightSelection(m_selected, width, height);
+
 } 
+
+template<typename VecType>
+void RenderScene<VecType>::m_drawObjSelection (int id, float width, float height){
+    std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
+    std::vector <Light<VecType>*> lights = m_myScene->getListLights();
+    for (auto obj : objs){
+        if (obj->getId() == id){
+            m_render->draw_Object_Selected(obj, lights, m_shaderObj, width, height);
+            return;
+        }
+    }
+}
+
+template<typename VecType>
+void RenderScene<VecType>::m_drawLightSelection (int id, float width, float height){
+    std::vector <Light<VecType>*> lights = m_myScene->getListLights();
+    for (auto light : lights){
+        if (light->getId() == id){
+            m_render->draw_Light_Selected(light, m_shaderLight, width, height);
+            return;
+        }
+    }
+}
+
+template<typename VecType>
+std::vector <int> RenderScene<VecType>::getObjectIds (){
+    std::vector <int> ids;
+    for (auto obj : m_myScene->getListObjects()){
+        ids.push_back(obj->getId());
+    }
+    return ids;
+}
+
+template<typename VecType>
+std::vector <int> RenderScene<VecType>::getLightIds (){
+    std::vector <int> ids;
+    for (auto light : m_myScene->getListLights()){
+        ids.push_back(light->getId());
+    }
+    return ids;
+}
+
+template<typename VecType>
+void RenderScene<VecType>::setObjectSelected(int id){
+    if (id == -1){
+        m_selected = -1;
+        m_selected_object = false;
+    }
+    else {
+        m_selected = id;
+        m_selected_object = true;
+        m_selected_light = false;
+    }
+}
+
+template<typename VecType>
+void RenderScene<VecType>::setLightSelected(int id){
+    if (id == -1){
+        m_selected = -1;
+        m_selected_light = false;
+    }
+    else {
+        m_selected = id;
+        m_selected_light = true;
+        m_selected_object = false;
+    }
+}

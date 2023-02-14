@@ -61,6 +61,10 @@ class ImGuiInterface {
         bool m_lights_visible = true;
         bool m_objects_visible = true;
 
+        bool m_selected_light = false;
+        bool m_selected_object = false;
+        int m_selected = -1;
+
         // Variables
         RenderScene<VecType>* m_renderScene;
 };

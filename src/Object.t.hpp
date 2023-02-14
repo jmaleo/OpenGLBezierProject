@@ -75,4 +75,5 @@ void MyObject<VecType>::setNormales( std::vector < VecType > list_normales ){
 template <typename VecType>
 void MyObject<VecType>::setColor( glm::vec3 color ){
     m_color = color;
+    m_mat.color = color;
 }

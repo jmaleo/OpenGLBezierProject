@@ -8,6 +8,13 @@
 #include <fstream>
 #include <string>
 
+struct s_material {
+    glm::vec3 color = glm::vec3(0.0f);
+    float metallic = 0.3f;
+    float roughness = 0.8f;
+    float ao = 0.5f;
+}typedef Material;
+
 // VecType like glm::vec2 or glm::vec3
 template<typename VecType>
 class MyObject{
@@ -29,6 +36,8 @@ class MyObject{
         void setNormales ( std::vector < VecType > list_normales );
 
         void setColor ( glm::vec3 color );
+
+        void setMaterial (Material mat) { m_mat = mat; }
         
         void setIndices ( std::vector < unsigned int > list_indices ) { m_indices = list_indices; }
 
@@ -43,6 +52,8 @@ class MyObject{
         std::vector < VecType > getNormales () { return m_normales; }
         
         std::vector < unsigned int > getIndices () { return m_indices; }
+
+        Material getMaterial () { return m_mat; }
 
         glm::vec3 getColor () { return m_color; }
 
@@ -65,9 +76,7 @@ class MyObject{
 
         // Parametres de matériaux
         glm::vec3 m_color; // Albedo
-        float metallic = 0.0f;
-        float roughness = 0.0f;
-        float ao = 0.0f;
+        Material m_mat;
 
 
 };

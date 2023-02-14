@@ -19,6 +19,7 @@ class Light {
         }
 
         // getter
+        int getId () { return m_id; }
 
         VecType getPosition () { return m_pos; }
         
@@ -27,8 +28,6 @@ class Light {
         unsigned int* get_VAO() { return &VAO; }
 
         unsigned int* get_VBOposition() { return &VBOposition; }
-
-        unsigned int* get_VBOcolor () { return &VBOcolor; }
 
         // Setter 
         void setPosition (VecType position) { m_pos = position; }
@@ -40,5 +39,5 @@ class Light {
         VecType m_pos;
         glm::vec3 m_col;
 
-        unsigned int VAO, VBOposition, VBOcolor;
+        unsigned int VAO, VBOposition;
 };
