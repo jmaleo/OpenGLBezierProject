@@ -30,6 +30,8 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
     myScene->addLight(new Light<glm::vec3> (0, glm::vec3(-length/4, length/8, -length/3), glm::vec3(0.1f, 0.1f, 0.7f)));
     myScene->addLight(new Light<glm::vec3> (1, glm::vec3(length/4, length/8, -length/3), glm::vec3(0.7f, 0.1f, 0.1f)));
     myScene->addLight(new Light<glm::vec3> (2, glm::vec3(0, length/8.5, -length/3), glm::vec3(0.1f, 0.7f, 0.1f)));
+    // Back light, HIGH INTENSITY
+    myScene->addLight(new Light<glm::vec3> (3, glm::vec3(0, length/8.5, +length/3), glm::vec3(200.0f, 100.0f, 20.0f)));
 
     return myScene;
 }
