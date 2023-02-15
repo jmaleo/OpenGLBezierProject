@@ -105,15 +105,6 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    /**
-     *  
-     * 
-     * 
-     *   DEBUG DEBUG DEBUG DEBUG
-     * 
-     * 
-     */
-
     /*
         Dans l'idée : - On setup une caméra.
                       - On setup une scene. -> Objets / lights
@@ -128,8 +119,7 @@ int main()
     myRender = new RenderScene<glm::vec3>(myScene);
     myInterface = new ImGuiInterface<glm::vec3>(myRender);
 
-    myRender->setUpObjects();
-    myRender->setUpLights();
+    myRender->setUp((float)SCR_WIDTH, (float)SCR_HEIGHT);
     
 
     while (!glfwWindowShouldClose(window))
@@ -147,18 +137,12 @@ int main()
         processInput(window);
 
         //rendering commands here
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-
-		//LIGHT
-        // lightMesh->draw(shaderLights, float(SCR_WIDTH), float(SCR_HEIGHT));
 
 		// Just press L to show triangles or facettes
         glPolygonMode(GL_FRONT_AND_BACK, lines);
 
         myInterface->draw((float)SCR_WIDTH, (float)SCR_HEIGHT);
-        // myRender.draw_Object(&firstCube, shaderControl, (float)SCR_WIDTH, (float)SCR_HEIGHT);
 
         ImGui::Render();
         int display_w, display_h;

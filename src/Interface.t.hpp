@@ -59,7 +59,21 @@ void ImGuiInterface<VecType>::_drawScene(){
     ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
     ImGui::Begin("Test_Interface_SCENE", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-    ImGui::Text("Fenêtre de l'interface pour la SCENE.");
+    if ( ImGui::Button ("Hdr") ){
+        m_hdr = !m_hdr;
+        m_renderScene->setHDR(m_hdr);
+    }
+    ImGui::SameLine();
+    ImGui::Text((m_hdr ?"On":"Off"));
+
+    ImGui::SliderFloat("Exposure", m_renderScene->getExposure(), 0.0f, 10.0f);
+
+    if ( ImGui::Button ("Bloom") ){
+        m_bloom = !m_bloom;
+        m_renderScene->setBloom(m_bloom);
+    }
+    ImGui::SameLine();
+    ImGui::Text((m_bloom ?"On":"Off"));
 
     if ( ImGui::Button ( "Show objects") ) {
         m_objects_visible = ! m_objects_visible;
@@ -160,12 +174,8 @@ void ImGuiInterface<VecType>::_drawLights(){
 template<typename VecType>
 void ImGuiInterface<VecType>::_drawFrame(float width, float height){
     if (!m_scene_visible){ return; }
-    if (m_objects_visible){
-        m_renderScene->drawObjects(width, height);
-    }
-    if (m_lights_visible){
-        m_renderScene->drawLights(width, height);
-    }
+    int selection = m_objects_visible + 2 * m_lights_visible;
+    m_renderScene->draw(width, height, selection);
 }
 
 // glm::vec3 color = glm::vec3(0.0f);

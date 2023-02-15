@@ -4,6 +4,35 @@
 
 
 /**
+ * Setup FBO for  for openGL.
+*/
+template<typename VecType>
+void Render<VecType>::setUp_FBO (float src_width, float src_height){
+
+    glGenFramebuffers(1, &fboHDR);
+    // create floating point color buffer
+    unsigned int colorBuffer;
+    glGenTextures(1, &colorBuffer);
+    glBindTexture(GL_TEXTURE_2D, colorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, src_width, src_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // create depth buffer (renderbuffer)
+    glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, src_width, src_height);
+    // attach buffers
+    glBindFramebuffer(GL_FRAMEBUFFER, fboHDR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    return;
+}
+
+/**
  * Setup Object for openGL.
 */
 template<typename VecType>
@@ -67,6 +96,31 @@ void Render<VecType>::setUp_Light (Light<VecType>* light){
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    glBindVertexArray(0);
+}
+
+template<typename VecType>
+void Render<VecType>::bind_HDR(){
+    glBindFramebuffer(GL_FRAMEBUFFER, fboHDR);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+template<typename VecType>
+void Render<VecType>::unbind_HDR(){
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+template<typename VecType>
+void Render<VecType>::draw_HDR(ShaderProgram* m_shaderHDR, float width, float height, int hdr, float exposure){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    m_shaderHDR->use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorBuffer);
+    m_shaderHDR->setInt("hdr", hdr);
+    m_shaderHDR->setFloat("exposure", exposure);
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
 }
 
@@ -235,4 +289,25 @@ void Render<VecType>::draw_Light_Selected (Light<VecType>* light, ShaderProgram*
     glBindVertexArray(*VAO);
     glDrawArrays(GL_POINTS, 0, 1);
     glBindVertexArray(0);
+}
+
+template<typename VecType>
+void Render<VecType>::setUp_quad () {
+    float quadVertices[] = {
+        // positions        // texture Coords
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+    };
+    // setup plane VAO
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); 
 }

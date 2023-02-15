@@ -24,9 +24,19 @@ class Render {
 
         // virtual ~Render();
 
+        void setUp_FBO (float src_width, float src_height);
+
+        void setUp_quad ();
+
         void setUp_Object (MyObject<VecType>* obj);
 
         void setUp_Light (Light<VecType>* light);
+
+        void bind_HDR ();
+        void unbind_HDR ();
+
+
+        void draw_HDR(ShaderProgram* m_shaderHDR, float width, float height, int hdr, float exposure);
 
         void draw_Object (MyObject<VecType>* obj, std::vector<Light<VecType>*> lights, ShaderProgram* shader, float width, float height);
         void draw_Object_Selected (MyObject<VecType>* obj, std::vector<Light<VecType>*> lights, ShaderProgram* shader, float width, float height);
@@ -37,4 +47,13 @@ class Render {
 
     private:
         Camera* m_camera;
+
+        unsigned int quadVAO;
+        unsigned int quadVBO;
+
+        unsigned int fboHDR;
+        unsigned int colorBuffer;
+        unsigned int rboDepth;
+
+        void m_drawQuad(); 
 };

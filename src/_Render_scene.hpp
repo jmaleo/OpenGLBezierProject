@@ -24,17 +24,27 @@ class RenderScene {
     public: 
         RenderScene (Scene<VecType>* scene);
 
-        void setUpObjects ();
+        /**
+         * @brief SetUp rendering.
+         */
+        void setUp (float src_width, float src_height);
 
-        void setUpLights ();
 
-        void drawObjects (float width, float height);
-
-        void drawLights (float width, float height);
+        /**
+         * @brief Does all the draw process.
+         * @param selection : 0 if no object or light is selected, 1 for object and 2 for light and 3 for both.
+         */
+        void draw (float width, float height, int selection);
 
         Material* getMaterial (int id);
 
+        float* getExposure () { return &m_exposure; }
+
         glm::vec3 getLightColor(int id);
+
+        void setHDR (bool h) { m_hdr = h; }
+
+        void setBloom (bool b) { m_bloom = b; }
 
         void setMaterial (int id, Material mat);
 
@@ -53,29 +63,30 @@ class RenderScene {
 
         std::string m_vertexShader_name = "vertexShader.glsl";
         std::string m_fragmentShader_name = "fragmentShader.glsl";
-        std::string m_fragmentShader_microfacette_name = "fragmentShader_test.glsl";
+        
+        std::string m_vertexShaderLight_name = "vertexLight.glsl";
+        std::string m_fragmentShaderLight_name = "fragmentLight.glsl";
+
+        std::string m_vertexShaderHDR_name = "vertexHDR.glsl";
+        std::string m_fragmentShaderHDR_name = "fragmentHDR.glsl";
 
         std::string m_path_vertexShader = SHADER_DIR + m_vertexShader_name;
         std::string m_path_fragmentShader = SHADER_DIR + m_fragmentShader_name;
-        std::string m_path_fragmentShader_microfacette = SHADER_DIR + m_fragmentShader_microfacette_name;
 
-        std::string m_vertexShaderLight_name = "vertexLight.glsl";
-        std::string m_fragmentShaderLight_name = "fragmentLight.glsl";
         std::string m_path_vertexShaderLight = SHADER_DIR + m_vertexShaderLight_name;
         std::string m_path_fragmentShaderLight = SHADER_DIR + m_fragmentShaderLight_name;
 
-        std::string m_fragmentShaderSelection_name = "fragmentLight.glsl";
-        std::string m_path_fragmentShaderSelection = SHADER_DIR + m_fragmentShaderSelection_name;
-
+        std::string m_path_vertexShaderHDR = SHADER_DIR + m_vertexShaderHDR_name;
+        std::string m_path_fragmentShaderHDR = SHADER_DIR + m_fragmentShaderHDR_name;
 
 
         // Used to debug for instance.
         ShaderProgram* m_shaderObj = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader.c_str());
-        ShaderProgram* m_shaderObj_microfacette = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader_microfacette.c_str());
 
         ShaderProgram* m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());
 
-        ShaderProgram* m_shaderSelection = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderSelection.c_str());
+        ShaderProgram* m_shaderHDR = new ShaderProgram(m_path_vertexShaderHDR.c_str(), m_path_fragmentShaderHDR.c_str());
+
 
         Render<VecType>* m_render;
         Scene<VecType>* m_myScene;
@@ -84,6 +95,17 @@ class RenderScene {
         bool m_selected_object = false;
         bool m_selected_light = false;
 
+        bool m_hdr = true;
+        bool m_bloom = true;
+        float m_exposure = 2.0f;
+
+        void m_setUpObjects ();
+
+        void m_setUpLights ();
+
+        void m_drawObjects (float width, float height);
+
+        void m_drawLights (float width, float height);
 
         void m_drawObjSelection (int objIds, float width, float height);
 

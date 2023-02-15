@@ -68,6 +68,9 @@ class ImGuiInterface {
         bool m_selected_object = false;
         int m_selected = -1;
 
+        bool m_hdr = true;
+        bool m_bloom = true;
+
         // Variables
         RenderScene<VecType>* m_renderScene;
 
