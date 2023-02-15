@@ -12,8 +12,10 @@ void ImGuiInterface<VecType>::draw(float width, float height){
     _drawScene();
     _drawObject();
     _drawLights();
+    _drawSelectInformation();
 
     _drawFrame(width, height);
+
 }
 
 /**
@@ -164,4 +166,41 @@ void ImGuiInterface<VecType>::_drawFrame(float width, float height){
     if (m_lights_visible){
         m_renderScene->drawLights(width, height);
     }
+}
+
+// glm::vec3 color = glm::vec3(0.0f);
+// float metallic = 0.3f;
+// float roughness = 0.8f;
+// float ao = 0.5f;
+
+template<typename VecType>
+void ImGuiInterface<VecType>::_drawSelectInformation(){
+    if (m_selected == -1) {
+        m_selected_mat = nullptr;
+        return; 
+    }
+
+    ImGui::Begin("Informations");
+
+    if (m_selected_object){
+        m_selected_mat = m_renderScene->getMaterial(m_selected);
+        float color[3] = {m_selected_mat->color[0], m_selected_mat->color[1], m_selected_mat->color[2] };
+
+        ImGui::ColorEdit3 ("Color", color);
+        ImGui::SliderFloat ("metallic", &(m_selected_mat->metallic), 0.0f, 1.0f);
+        ImGui::SliderFloat ("roughness", &(m_selected_mat->roughness), 0.0f, 1.0f);
+        ImGui::SliderFloat ("ao", &(m_selected_mat->ao), 0.0f, 1.0f);
+
+        m_selected_mat->color = glm::vec3(color[0], color[1], color[2]);
+    }
+
+    if (m_selected_light){
+        glm::vec3 light_color = m_renderScene->getLightColor(m_selected);
+        float color[3] = {light_color[0], light_color[1], light_color[2] };
+        ImGui::ColorEdit3 ("Color", color);
+        m_renderScene->setLightColor(m_selected, color);
+    }
+
+
+    ImGui::End();
 }

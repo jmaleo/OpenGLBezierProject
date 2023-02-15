@@ -47,7 +47,7 @@ Scene<glm::vec3>* generateSphereScene (glm::vec3 position_min, glm::vec3 positio
  * @brief 
  * 
  * @param id
- * @param position Position of the top left back cube.
+ * @param position Position of the top left front cube.
  * @param length length of one edge of the cube.
  * @param colors Unique color for the entire cube.
  * @param normal_dir Direction of the normal (interior => false       exterior => true)

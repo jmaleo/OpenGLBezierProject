@@ -15,6 +15,14 @@ struct s_material {
     float ao = 0.5f;
 }typedef Material;
 
+Material initialiseMaterial (){
+    Material mat;
+    mat.metallic = 0.0f;
+    mat.roughness = 0.0f;
+    mat.ao = 0.0f;
+    return mat;
+}
+
 // VecType like glm::vec2 or glm::vec3
 template<typename VecType>
 class MyObject{
@@ -53,9 +61,7 @@ class MyObject{
         
         std::vector < unsigned int > getIndices () { return m_indices; }
 
-        Material getMaterial () { return m_mat; }
-
-        glm::vec3 getColor () { return m_color; }
+        Material* getMaterial () { return &m_mat; }
 
         unsigned int* get_VAO () { return &VAO; };
 

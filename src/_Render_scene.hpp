@@ -32,6 +32,13 @@ class RenderScene {
 
         void drawLights (float width, float height);
 
+        Material* getMaterial (int id);
+
+        glm::vec3 getLightColor(int id);
+
+        void setMaterial (int id, Material mat);
+
+        void setLightColor(int id, float* color);
 
         std::vector <int> getObjectIds ();
 
@@ -46,8 +53,11 @@ class RenderScene {
 
         std::string m_vertexShader_name = "vertexShader.glsl";
         std::string m_fragmentShader_name = "fragmentShader.glsl";
+        std::string m_fragmentShader_microfacette_name = "fragmentShader_test.glsl";
+
         std::string m_path_vertexShader = SHADER_DIR + m_vertexShader_name;
         std::string m_path_fragmentShader = SHADER_DIR + m_fragmentShader_name;
+        std::string m_path_fragmentShader_microfacette = SHADER_DIR + m_fragmentShader_microfacette_name;
 
         std::string m_vertexShaderLight_name = "vertexLight.glsl";
         std::string m_fragmentShaderLight_name = "fragmentLight.glsl";
@@ -61,6 +71,8 @@ class RenderScene {
 
         // Used to debug for instance.
         ShaderProgram* m_shaderObj = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader.c_str());
+        ShaderProgram* m_shaderObj_microfacette = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader_microfacette.c_str());
+
         ShaderProgram* m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());
 
         ShaderProgram* m_shaderSelection = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderSelection.c_str());

@@ -48,6 +48,9 @@ class ImGuiInterface {
 
         // Function that draw the openGL frame, following the interface.
         void _drawFrame(float width, float heigth);
+
+        // Function that draw the information of a selected light or object
+        void _drawSelectInformation();
         
         // Indicates the size (width) of a widget. 
         int m_size_width = 200;
@@ -67,4 +70,7 @@ class ImGuiInterface {
 
         // Variables
         RenderScene<VecType>* m_renderScene;
+
+        // Variables for the object's material
+        Material* m_selected_mat;
 };

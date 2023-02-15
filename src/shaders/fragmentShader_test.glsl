@@ -1,18 +1,20 @@
 #version 330 core
 out vec4 FragColor;
-in vec2 TexCoords;
+// in vec2 TexCoords;
 in vec3 WorldPos;
-in vec3 Normal;
+in vec3 normal;
   
-uniform vec3 camPos;
+uniform vec3 cameraPosition;
   
-uniform vec3  albedo;
+uniform vec3  objectColor; // albedo
 uniform float metallic;
 uniform float roughness;
 uniform float ao;
 
-uniform vec3 lightPositions[4];
-uniform vec3 lightColors[4];
+uniform vec3 lightPos[10];
+uniform vec3 lightColor[10];
+
+const float PI = 3.14159265359;
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -55,22 +57,22 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 void main()
 {		
-    vec3 N = normalize(Normal);
-    vec3 V = normalize(camPos - WorldPos);
+    vec3 N = normalize(normal);
+    vec3 V = normalize(cameraPosition - WorldPos);
 
     vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, albedo, metallic);
+    F0 = mix(F0, objectColor, metallic);
 	           
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < 3; ++i) 
     {
         // calculate per-light radiance
-        vec3 L = normalize(lightPositions[i] - WorldPos);
+        vec3 L = normalize(lightPos[i] - WorldPos);
         vec3 H = normalize(V + L);
-        float distance    = length(lightPositions[i] - WorldPos);
+        float distance    = length(lightPos[i] - WorldPos);
         float attenuation = 1.0 / (distance * distance);
-        vec3 radiance     = lightColors[i] * attenuation;        
+        vec3 radiance     = lightColor[i] * attenuation;        
         
         // cook-torrance brdf
         float NDF = DistributionGGX(N, H, roughness);        
@@ -87,10 +89,10 @@ void main()
             
         // add to outgoing radiance Lo
         float NdotL = max(dot(N, L), 0.0);                
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+        Lo += (kD * objectColor / PI + specular) * radiance * NdotL; 
     }   
   
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.03) * objectColor * ao;
     vec3 color = ambient + Lo;
 	
     color = color / (color + vec3(1.0));

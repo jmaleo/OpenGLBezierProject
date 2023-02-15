@@ -78,6 +78,7 @@ void Render<VecType>::draw_Object (MyObject<VecType>* obj, std::vector<Light<Vec
     
     unsigned int* VAO = obj->get_VAO();
     std::vector<unsigned int> indices = obj->getIndices();
+    Material* mat = obj->getMaterial();
     
     shader->use();
 
@@ -94,7 +95,13 @@ void Render<VecType>::draw_Object (MyObject<VecType>* obj, std::vector<Light<Vec
     glm::mat4 model = glm::mat4(1.0f);
     shader->setMat4("model", model);
 
-    shader->setVec3("objectColor", obj->getColor());
+    shader->setVec3("objectColor", mat->color);
+
+    shader->setFloat("metallic", mat->metallic);
+
+    shader->setFloat("roughness", mat->roughness);
+    
+    shader->setFloat("ao", mat->ao);
 
     for (int i = 0; i < lights.size(); i++){
         std::string lightPos = "lightPos[" + to_string(i) + "]";
@@ -120,7 +127,7 @@ void Render<VecType>::draw_Object_Selected (MyObject<VecType>* obj, std::vector<
     
     unsigned int* VAO = obj->get_VAO();
     std::vector<unsigned int> indices = obj->getIndices();
-    
+    Material* mat = obj->getMaterial();
     shader->use();
 
     // pass projection matrix to shader (note that in this case it could change every frame)
@@ -137,7 +144,14 @@ void Render<VecType>::draw_Object_Selected (MyObject<VecType>* obj, std::vector<
     shader->setMat4("model", model);
 
     float time_now = glfwGetTime();
-    shader->setVec3("objectColor", (0.5f + sin(2*time_now)*0.5f) * (obj->getColor()));
+    shader->setVec3("objectColor", (0.5f + sin(2*time_now)*0.5f) * (mat->color));
+
+    shader->setFloat("metallic", mat->metallic);
+
+    shader->setFloat("roughness", mat->roughness);
+    
+    shader->setFloat("ao", mat->ao);
+
 
     for (int i = 0; i < lights.size(); i++){
         std::string lightPos = "lightPos[" + to_string(i) + "]";
