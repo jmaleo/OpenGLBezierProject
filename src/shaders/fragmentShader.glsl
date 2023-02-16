@@ -11,8 +11,8 @@ uniform float metallic;
 uniform float roughness;
 uniform float ao;
 
-uniform vec3 lightPos[10];
-uniform vec3 lightColor[10];
+uniform vec3 lightPos[4];
+uniform vec3 lightColor[4];
 
 const float PI = 3.14159265359;
 

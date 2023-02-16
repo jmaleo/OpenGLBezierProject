@@ -89,6 +89,9 @@ class Scene {
 
         int m_numObj = 0;
 
+        int m_lastId_object = 0;
+        int m_lastId_light = 0;
+
         std::vector < MyObject<VecType>* > m_listObjects;
         std::vector < Light<VecType>* > m_listLights;
 

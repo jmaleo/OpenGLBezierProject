@@ -30,6 +30,8 @@ class Light {
         unsigned int* get_VBOposition() { return &VBOposition; }
 
         // Setter 
+        void setId (int id) { m_id = id; }
+
         void setPosition (VecType position) { m_pos = position; }
 
         void setColor (VecType color) { m_col = color; }

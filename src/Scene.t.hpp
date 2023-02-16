@@ -27,7 +27,9 @@ Scene<VecType>::~Scene(){
  */
 template<typename VecType>
 void Scene<VecType>::addObject (MyObject<VecType>* obj){
+    obj->setId(m_lastId_object);
     m_listObjects.push_back(obj);
+    m_lastId_object += 1;
 }
 
 /**
@@ -57,7 +59,9 @@ void Scene<VecType>::deleteObject (int id){
  */
 template<typename VecType>
 void Scene<VecType>::addLight (Light<VecType>* light){
+    light->setId(m_lastId_light);
     m_listLights.push_back(light);
+    m_lastId_light += 1;
 }
 
 /**

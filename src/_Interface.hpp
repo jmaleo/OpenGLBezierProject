@@ -18,7 +18,7 @@
 #include "Scene.t.hpp"
 #include "Render_scene.t.hpp"
 #include "utils.t.hpp"
-
+#include "_ControlGLSL.hpp"
 
 
 // J'ai besoin pour cette classe de pouvoir TOUT panipuler, puisque je veux que l'utilisateur intéragisse avec TOUT.
@@ -76,4 +76,6 @@ class ImGuiInterface {
 
         // Variables for the object's material
         Material* m_selected_mat;
+
+        bool m_newThing = false;
 };

@@ -16,6 +16,10 @@ MyObject<VecType>::MyObject ( int id,  std::vector < VecType > list_vertices,
     setNormales(list_normales);
     setColor(color);
     setIndices(list_indices);
+
+    m_depth = glm::distance(list_vertices[4], list_vertices[1]);
+    m_width = glm::distance(list_vertices[2], list_vertices[14]);
+    m_height = glm::distance(list_vertices[2], list_vertices[11]);
 }
 
 template<typename VecType>
@@ -24,6 +28,10 @@ MyObject<VecType>::MyObject ( int id, std::vector < VecType > list_vertices, std
     m_id = id;
     setVertices(list_vertices);
     setIndices(list_indices);
+    
+    m_depth = glm::distance(list_vertices[4], list_vertices[1]);
+    m_width = glm::distance(list_vertices[2], list_vertices[14]);
+    m_height = glm::distance(list_vertices[2], list_vertices[11]);
 }
 
 /**

@@ -36,6 +36,8 @@ class RenderScene {
          */
         void draw (float width, float height, int selection);
 
+        void addLight (Light<VecType> newLight);
+
         Material* getMaterial (int id);
 
         float* getExposure () { return &m_exposure; }
@@ -57,6 +59,14 @@ class RenderScene {
         void setObjectSelected (int id);
 
         void setLightSelected (int id);
+
+        void setTempLight (Light<VecType>* l ) { m_temp_light = l; }
+        void setTempObject (MyObject<VecType>* o ) { m_temp_object = o; }
+
+        Light<VecType>* getTempLight () { return m_temp_light; }
+        MyObject<VecType>* getTempObject () { return m_temp_object; }
+
+        glm::vec3 getCameraPosition () { return m_myScene->getCamera()->Position; }
 
 
     private:
@@ -90,6 +100,9 @@ class RenderScene {
 
         Render<VecType>* m_render;
         Scene<VecType>* m_myScene;
+
+        Light<VecType>* m_temp_light = nullptr;
+        MyObject<VecType>* m_temp_object = nullptr;
 
         int m_selected = -1;
         bool m_selected_object = false;

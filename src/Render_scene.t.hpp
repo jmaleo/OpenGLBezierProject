@@ -75,7 +75,8 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
 template<typename VecType>
 void RenderScene<VecType>::m_drawObjects(float width, float height){
     std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
-    std::vector <Light<VecType>*> lights = m_myScene->getListLights();
+    std::vector <Light<VecType>*> lights = m_myScene->getListLights();    
+
     for (auto obj : objs){
         if (!m_selected_object || m_selected != obj->getId())
             m_render->draw_Object(obj, lights, m_shaderObj, width, height);
@@ -199,4 +200,10 @@ void RenderScene<VecType>::setLightColor(int id, float* color){
             return light->setColor(glm::vec3(color[0], color[1], color[2]));
         }
     }
+}
+
+template<typename VecType>
+void RenderScene<VecType>::addLight (Light<VecType> newLight){
+    return;
+    // changeNumberLight(SHADER_DIR+std::string("fragmentShader.glsl"), 4, 5);
 }

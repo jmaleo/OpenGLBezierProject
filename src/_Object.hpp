@@ -74,6 +74,9 @@ class MyObject{
     private : 
         int m_id = -1;
         int m_nb_vertices = 0;
+        float m_depth = 0;
+        float m_width = 0;
+        float m_height = 0;
         unsigned int VAO, VBOvertices, VBOnormales, EBO;
         std::vector < VecType > m_vertices;
         std::vector < VecType > m_normales;

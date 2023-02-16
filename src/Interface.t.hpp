@@ -104,8 +104,6 @@ void ImGuiInterface<VecType>::_drawObject(){
     ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
     ImGui::Begin("Test_Interface_OBJECTS", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-    ImGui::Text("Fenêtre de l'interface pour les OBJECTS.");
-
     for (int id : ids){
         if (!m_selected_object || m_selected != id){
             std::string button_name = "Object " + std::to_string(id);
@@ -123,6 +121,15 @@ void ImGuiInterface<VecType>::_drawObject(){
                 m_renderScene->setObjectSelected(-1);
             }  
         }
+    }
+
+    ImGui::Separator();
+
+    if ( ImGui::Button ( "Add Object" ) ) {
+        glm::vec3 camPos = m_renderScene->getCameraPosition();
+        m_renderScene->setTempObject(nullptr);
+        m_newThing = true;
+        m_renderScene->setTempLight(nullptr);
     }
 
     ImGui::End();
@@ -146,8 +153,6 @@ void ImGuiInterface<VecType>::_drawLights(){
     ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
     ImGui::Begin("Test_Interface_LIGHTS", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-    ImGui::Text("Fenêtre de l'interface pour les LUMIERES.");
-
     for (int id : ids){
         if (!m_selected_light || m_selected != id){
             std::string button_name = "Light " + std::to_string(id);
@@ -167,8 +172,18 @@ void ImGuiInterface<VecType>::_drawLights(){
         }
     }
 
-    ImGui::End();
+    ImGui::Separator();
 
+    if ( ImGui::Button ( "Add Light" ) ) {
+        glm::vec3 camPos = m_renderScene->getCameraPosition();
+        glm::vec3 position = glm::vec3 (camPos[0], camPos[1], camPos[2] - 10);
+        m_renderScene->setTempLight(new Light<VecType>(-10, position, glm::vec3(0.6f, 0.6f, 0.6f)));
+        m_renderScene->setTempObject(nullptr);
+        m_newThing = true;
+    }
+    
+
+    ImGui::End();
 }
 
 template<typename VecType>

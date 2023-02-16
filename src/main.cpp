@@ -30,6 +30,7 @@
 #include "Render.t.hpp"
 #include "utils.t.hpp"
 #include "Render_scene.t.hpp"
+#include "_ControlGLSL.hpp"
 
 
 
@@ -116,11 +117,12 @@ int main()
     // Scene<glm::vec3> myScene;
     Scene<glm::vec3>* myScene = generateCubeScene(&camera);
     
+    
+
     myRender = new RenderScene<glm::vec3>(myScene);
     myInterface = new ImGuiInterface<glm::vec3>(myRender);
 
     myRender->setUp((float)SCR_WIDTH, (float)SCR_HEIGHT);
-    
 
     while (!glfwWindowShouldClose(window))
     {
@@ -137,7 +139,7 @@ int main()
         processInput(window);
 
         //rendering commands here
-        glEnable(GL_DEPTH_TEST);
+        // glEnable(GL_DEPTH_TEST);
 
 		// Just press L to show triangles or facettes
         glPolygonMode(GL_FRONT_AND_BACK, lines);
