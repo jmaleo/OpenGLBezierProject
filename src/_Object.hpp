@@ -17,9 +17,10 @@ struct s_material {
 
 Material initialiseMaterial (){
     Material mat;
-    mat.metallic = 0.0f;
-    mat.roughness = 0.0f;
-    mat.ao = 0.0f;
+    mat.color = glm::vec3(0.2f);
+    mat.metallic = 0.8f;
+    mat.roughness = 0.2f;
+    mat.ao = 0.5f;
     return mat;
 }
 

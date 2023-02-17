@@ -13,6 +13,7 @@ void ImGuiInterface<VecType>::draw(float width, float height){
     _drawObject();
     _drawLights();
     _drawSelectInformation();
+    _drawNewInformation(width, height);
 
     _drawFrame(width, height);
 
@@ -39,6 +40,10 @@ void ImGuiInterface<VecType>::_drawInterface(){
         if (m_scene_visible) {
             m_objects_visible = false;
             m_lights_visible = false;
+            m_scene_visible = false;
+        }
+        else {
+            m_scene_visible = true;
         }
         m_scene_visible = ! m_scene_visible;
     }
@@ -51,7 +56,9 @@ void ImGuiInterface<VecType>::_drawInterface(){
  */
 template<typename VecType>
 void ImGuiInterface<VecType>::_drawScene(){
-    if ( !m_scene_visible ) return;
+    if ( !m_scene_visible ){ 
+        return;
+    }
 
     m_begin_win += (m_size_width + m_size_offset);
 
@@ -180,8 +187,8 @@ void ImGuiInterface<VecType>::_drawLights(){
         m_renderScene->setTempLight(new Light<VecType>(-10, position, glm::vec3(0.6f, 0.6f, 0.6f)));
         m_renderScene->setTempObject(nullptr);
         m_newThing = true;
+        first_position = position;
     }
-    
 
     ImGui::End();
 }
@@ -189,7 +196,10 @@ void ImGuiInterface<VecType>::_drawLights(){
 template<typename VecType>
 void ImGuiInterface<VecType>::_drawFrame(float width, float height){
     if (!m_scene_visible){ return; }
-    int selection = m_objects_visible + 2 * m_lights_visible;
+
+    int obj = (m_objects_visible)?1:0;
+    int lig = (m_lights_visible)?1:0;
+    int selection = obj + 2 * lig;
     m_renderScene->draw(width, height, selection);
 }
 
@@ -209,6 +219,10 @@ void ImGuiInterface<VecType>::_drawSelectInformation(){
 
     if (m_selected_object){
         m_selected_mat = m_renderScene->getMaterial(m_selected);
+        if (m_selected_mat == nullptr){
+            std::cout << "Material not found" << std::endl;
+            exit(1);
+        } 
         float color[3] = {m_selected_mat->color[0], m_selected_mat->color[1], m_selected_mat->color[2] };
 
         ImGui::ColorEdit3 ("Color", color);
@@ -224,6 +238,58 @@ void ImGuiInterface<VecType>::_drawSelectInformation(){
         float color[3] = {light_color[0], light_color[1], light_color[2] };
         ImGui::ColorEdit3 ("Color", color);
         m_renderScene->setLightColor(m_selected, color);
+    }
+
+
+    ImGui::End();
+}
+
+template<typename VecType>
+void ImGuiInterface<VecType>::_drawNewInformation(float width, float height){
+    if (!m_newThing) {
+        return;
+    }
+
+    ImGui::Begin("New thing");
+
+    MyObject<VecType>* o = m_renderScene->getTempObject();
+    Light<VecType>* l = m_renderScene->getTempLight();
+
+    if (o != nullptr){
+        m_selected_mat = m_renderScene->getMaterial(m_selected);
+        float color[3] = {m_selected_mat->color[0], m_selected_mat->color[1], m_selected_mat->color[2] };
+
+        ImGui::ColorEdit3 ("Color", color);
+        ImGui::SliderFloat ("metallic", &(m_selected_mat->metallic), 0.0f, 1.0f);
+        ImGui::SliderFloat ("roughness", &(m_selected_mat->roughness), 0.0f, 1.0f);
+        ImGui::SliderFloat ("ao", &(m_selected_mat->ao), 0.0f, 1.0f);
+
+        m_selected_mat->color = glm::vec3(color[0], color[1], color[2]);
+    }
+
+    if (l != nullptr){
+        glm::vec3 light_color = l->getColor();
+        float color[3] = {light_color[0], light_color[1], light_color[2] };
+        ImGui::ColorEdit3 ("Color", color);
+        l->setColor(glm::vec3(color[0], color[1], color[2]));
+        glm::vec3 position = l->getPosition();
+        ImGui::SliderFloat("X", &(position[0]), first_position[0]-10.0f, first_position[0]+10.0f );
+        ImGui::SliderFloat("Y", &(position[1]), first_position[1]-10.0f, first_position[1]+10.0f );
+        ImGui::SliderFloat("Z", &(position[2]), first_position[2]-10.0f, first_position[2]+10.0f );
+        l->setPosition(position);
+        if ( ImGui::Button ("Add it !")) {
+            m_renderScene->addLight();
+            m_renderScene->resetShaders();
+            m_renderScene->setUp(width, height);
+            m_renderScene->setTempLight(nullptr);
+            m_renderScene->setTempObject(nullptr);
+            m_newThing = false;
+        }
+        if ( ImGui::Button (" Revert ")){
+            m_renderScene->setTempLight(nullptr);
+            m_renderScene->setTempObject(nullptr);
+            m_newThing = false;
+        }
     }
 
 

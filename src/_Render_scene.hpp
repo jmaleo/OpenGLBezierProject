@@ -17,6 +17,7 @@
 #include "Object.t.hpp"
 #include "Scene.t.hpp"
 #include "Render.t.hpp"
+#include "_ControlGLSL.hpp"
 
 template<typename VecType>
 class RenderScene {
@@ -36,7 +37,7 @@ class RenderScene {
          */
         void draw (float width, float height, int selection);
 
-        void addLight (Light<VecType> newLight);
+        void addLight ();
 
         Material* getMaterial (int id);
 
@@ -68,6 +69,7 @@ class RenderScene {
 
         glm::vec3 getCameraPosition () { return m_myScene->getCamera()->Position; }
 
+        void resetShaders();
 
     private:
 
@@ -123,5 +125,7 @@ class RenderScene {
         void m_drawObjSelection (int objIds, float width, float height);
 
         void m_drawLightSelection (int lightIds, float width, float height);
+
+        void m_draw_new(float width, float height, int selection);
 
 };

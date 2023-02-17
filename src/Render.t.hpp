@@ -11,10 +11,9 @@ void Render<VecType>::setUp_FBO (float src_width, float src_height){
 
     glGenFramebuffers(1, &fboHDR);
     // create floating point color buffer
-    unsigned int colorBuffer;
     glGenTextures(1, &colorBuffer);
     glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, src_width, src_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, (const unsigned int)src_width, (const unsigned int)src_height, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // create depth buffer (renderbuffer)
@@ -108,11 +107,12 @@ void Render<VecType>::bind_HDR(){
 template<typename VecType>
 void Render<VecType>::unbind_HDR(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 template<typename VecType>
 void Render<VecType>::draw_HDR(ShaderProgram* m_shaderHDR, float width, float height, int hdr, float exposure){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_shaderHDR->use();
     glActiveTexture(GL_TEXTURE0);

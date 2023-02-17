@@ -12,6 +12,7 @@ template<typename VecType>
 void RenderScene<VecType>::setUp(float src_width, float src_height){
     m_render->setUp_FBO(src_width, src_height);
     m_render->setUp_quad();
+    
     m_setUpLights();
     m_setUpObjects();
 }
@@ -61,10 +62,14 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
             break;
         default : break;
     }
+
+    // std::cout << "Error : " << glGetError() << std::endl;
+
+    m_draw_new(width, height, selection);
     m_render->unbind_HDR();
 
     // Effectuer le rendu HDR;
-    m_render->draw_HDR(m_shaderHDR, width, height, m_hdr, m_exposure);
+    m_render->draw_HDR(m_shaderHDR, width, height, (int16_t)m_hdr, m_exposure);
 
     // Recuperer le frame buffer, appliquer le bloom
 
@@ -203,7 +208,36 @@ void RenderScene<VecType>::setLightColor(int id, float* color){
 }
 
 template<typename VecType>
-void RenderScene<VecType>::addLight (Light<VecType> newLight){
-    return;
+void RenderScene<VecType>::addLight (){
+    int nbLight = m_myScene->getListLights().size();
+    changeNumberLight(m_path_fragmentShader, nbLight, nbLight+1 );
+    m_myScene->addLight(m_temp_light);
+    std::cout << "nb Light before " << nbLight << " and after : " << m_myScene->getListLights().size() << std::endl;
     // changeNumberLight(SHADER_DIR+std::string("fragmentShader.glsl"), 4, 5);
+}
+/**
+ * @param selection : 1 for only objects, 2 for only lights and 3 for both. Else : nothing
+ */
+template<typename VecType>
+void RenderScene<VecType>::m_draw_new(float width, float height, int selection){
+    if (m_temp_light != nullptr && (selection == 2 || selection == 3)){
+        m_render->setUp_Light(m_temp_light);
+        m_render->draw_Light_Selected(m_temp_light, m_shaderLight, width, height);
+    }
+    else {
+        if (m_temp_object != nullptr && (selection == 1 || selection == 3)){
+            m_render->setUp_Object(m_temp_object);
+            m_render->draw_Object_Selected(m_temp_object, m_myScene->getListLights(), m_shaderObj, width, height);
+        }
+    }
+}
+
+
+template<typename VecType>
+void RenderScene<VecType>::resetShaders(){
+    m_shaderObj = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader.c_str());
+
+    m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());
+
+    m_shaderHDR = new ShaderProgram(m_path_vertexShaderHDR.c_str(), m_path_fragmentShaderHDR.c_str());
 }

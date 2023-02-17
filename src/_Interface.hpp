@@ -51,6 +51,10 @@ class ImGuiInterface {
 
         // Function that draw the information of a selected light or object
         void _drawSelectInformation();
+
+        // Draw new object or light before appying.
+        void _drawNewInformation(float width, float height);
+
         
         // Indicates the size (width) of a widget. 
         int m_size_width = 200;
@@ -78,4 +82,5 @@ class ImGuiInterface {
         Material* m_selected_mat;
 
         bool m_newThing = false;
+        VecType first_position;
 };

@@ -41,8 +41,8 @@ void processInput(GLFWwindow* window);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1200;
+const unsigned int SCR_HEIGHT = 1000;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -58,8 +58,9 @@ ImGuiInterface<glm::vec3>* myInterface = nullptr;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-int lines = GL_LINE;
+int lines = GL_FILL;
 bool lineChange = true;
+
 
 int main()
 {
@@ -96,6 +97,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     srand(time(NULL));
 
@@ -135,14 +137,18 @@ int main()
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         // input
         processInput(window);
 
         //rendering commands here
-        // glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
 
 		// Just press L to show triangles or facettes
-        glPolygonMode(GL_FRONT_AND_BACK, lines);
+        // glPolygonMode(GL_FRONT_AND_BACK, lines);
 
         myInterface->draw((float)SCR_WIDTH, (float)SCR_HEIGHT);
 
@@ -157,8 +163,8 @@ int main()
     }
      
     //SURFACE
-    delete myScene;
-    delete myInterface;
+    // delete myScene;
+    // delete myInterface;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -192,7 +198,7 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && lineChange) {
-        lines = (lines == GL_FILL) ? GL_LINE : GL_FILL;
+        lines = (lines == GL_FILL) ? GL_FILL : GL_LINE;
         lineChange = false;
     }
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_RELEASE)
