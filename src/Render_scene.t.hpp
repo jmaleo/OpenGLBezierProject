@@ -5,6 +5,8 @@
 template<typename VecType>
 RenderScene<VecType>::RenderScene(Scene<VecType>* scene) { 
     m_myScene = scene; 
+    initGLSL();
+    initShaders();
     m_render = new Render<VecType> (scene->getCamera());
 }
 
@@ -62,6 +64,8 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
             break;
         default : break;
     }
+    update_particles(m_myScene->getParticles(), 1, m_myScene);
+    m_render->draw_Particles(m_myScene->getParticles(), m_shaderLight, width, height);
 
     // std::cout << "Error : " << glGetError() << std::endl;
 
@@ -232,9 +236,20 @@ void RenderScene<VecType>::m_draw_new(float width, float height, int selection){
     }
 }
 
+template<typename VecType>
+void RenderScene<VecType>::resetGLSL(){
+    int nbLight = m_myScene->getListLights().size();
+    changeNumberLight(m_path_fragmentShader, nbLight, 1 );
+}
 
 template<typename VecType>
-void RenderScene<VecType>::resetShaders(){
+void RenderScene<VecType>::initGLSL(){
+    int nbLight = m_myScene->getListLights().size();
+    changeNumberLight(m_path_fragmentShader, 1, nbLight );
+}
+
+template<typename VecType>
+void RenderScene<VecType>::initShaders(){
     m_shaderObj = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader.c_str());
 
     m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());

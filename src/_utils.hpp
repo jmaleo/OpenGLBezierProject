@@ -10,8 +10,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstdint>
+#include <memory>
 
 #include "Object.t.hpp"
+#include "Particle.t.hpp"
 #include "Scene.t.hpp"
 #include "Camera.h"
 
@@ -92,3 +94,13 @@ std::vector <glm::vec3> generateCubeNormales (std::vector <glm::vec3> vertices, 
  * @return MyObject<glm::vec3> 
  */
 MyObject<glm::vec3>* generateSphere (int id, glm::vec3 position, float radius, glm::vec3 col, bool normal_dir);
+
+
+std::vector < Particle* > generateParticles (int nb_particles, glm::vec3 positionMin, glm::vec3 positionMax, float size, float life, glm::vec3 color);
+
+bool check_collision_box(Particle *p, glm::vec3 box_min, glm::vec3 box_max);
+
+bool check_collision(Particle* p1, Particle* p2);
+bool check_collision(Particle *p, MyObject<glm::vec3> *obj);
+
+void update_particles(std::vector< Particle *> particles, float dt, Scene<glm::vec3>* scene);

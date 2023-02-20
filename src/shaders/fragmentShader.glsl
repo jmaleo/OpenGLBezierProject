@@ -11,8 +11,8 @@ uniform float metallic;
 uniform float roughness;
 uniform float ao;
 
-uniform vec3 lightPos[4];
-uniform vec3 lightColor[4];
+uniform vec3 lightPos[1];
+uniform vec3 lightColor[1];
 
 const float PI = 3.14159265359;
 
@@ -65,7 +65,7 @@ void main()
 	           
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < 1; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPos[i] - WorldPos);

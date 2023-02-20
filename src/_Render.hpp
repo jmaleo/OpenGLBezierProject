@@ -44,12 +44,17 @@ class Render {
         void draw_Light (Light<VecType>* light, ShaderProgram* shader, float width, float height);
         void draw_Light_Selected (Light<VecType>* light, ShaderProgram* shader, float width, float height);
 
+        void draw_Particles (std::vector<Particle*> particles, ShaderProgram* shader, float width, float height);
 
     private:
         Camera* m_camera;
 
         unsigned int quadVAO;
         unsigned int quadVBO;
+
+        unsigned int particleVAO;
+        unsigned int particleVBO;
+        bool initialized_particle = false;
 
         unsigned int fboHDR;
         unsigned int colorBuffer;

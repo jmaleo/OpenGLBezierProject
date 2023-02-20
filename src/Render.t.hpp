@@ -311,3 +311,57 @@ void Render<VecType>::setUp_quad () {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); 
 }
+
+
+template<typename VecType>
+void Render<VecType>::draw_Particles (std::vector<Particle*> particles, ShaderProgram* shader, float width, float height){
+
+    // update_particles(particles, 1);
+
+    std::vector<VecType> vertices;
+    for (int i = 0; i < particles.size(); i++){
+        vertices.push_back(particles.at(i)->get_position());
+    }
+
+    glGenVertexArrays(1, &particleVAO);
+    glGenBuffers(1, &particleVBO);
+
+    glBindVertexArray(particleVAO);
+
+    // vertex positions
+    glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+
+    shader->use();
+
+    // pass projection matrix to shader (note that in this case it could change every frame)
+    glm::mat4 projection = glm::perspective(glm::radians(m_camera->Zoom), width / height, 0.1f, 100.0f);
+    shader->setMat4("projection", projection);
+
+    shader->setVec3("cameraPosition", m_camera->Position);
+
+    // camera/view transformation
+    glm::mat4 view = m_camera->GetViewMatrix();
+    shader->setMat4("view", view);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    shader->setMat4("model", model);
+
+    float time_now = glfwGetTime();
+
+    glm::vec3 color = particles.at(0)->get_material()->color;
+    shader->setVec3("color", color);
+
+    // draw mesh
+    glLineWidth(1);
+    glPointSize(particles.at(0)->get_size());
+    glBindVertexArray(particleVAO);
+    glDrawArrays(GL_POINTS, 0, vertices.size());
+    glBindVertexArray(0);
+
+    return;
+}

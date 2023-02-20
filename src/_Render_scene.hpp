@@ -14,6 +14,7 @@
 #include "ShaderProgram.h"
 #include "Camera.h"
 
+#include "Particle.t.hpp"
 #include "Object.t.hpp"
 #include "Scene.t.hpp"
 #include "Render.t.hpp"
@@ -69,7 +70,11 @@ class RenderScene {
 
         glm::vec3 getCameraPosition () { return m_myScene->getCamera()->Position; }
 
-        void resetShaders();
+        void initShaders();
+
+        void resetGLSL();
+
+        void initGLSL();
 
     private:
 
@@ -93,11 +98,11 @@ class RenderScene {
 
 
         // Used to debug for instance.
-        ShaderProgram* m_shaderObj = new ShaderProgram(m_path_vertexShader.c_str(), m_path_fragmentShader.c_str());
+        ShaderProgram* m_shaderObj;
 
-        ShaderProgram* m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());
+        ShaderProgram* m_shaderLight;
 
-        ShaderProgram* m_shaderHDR = new ShaderProgram(m_path_vertexShaderHDR.c_str(), m_path_fragmentShaderHDR.c_str());
+        ShaderProgram* m_shaderHDR;
 
 
         Render<VecType>* m_render;

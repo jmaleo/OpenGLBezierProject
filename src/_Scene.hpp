@@ -14,6 +14,7 @@
 
 #include "Object.t.hpp"
 #include "Light.t.hpp"
+#include "Particle.t.hpp"
 
 template <typename VecType>
 class Scene {
@@ -40,6 +41,8 @@ class Scene {
          * @param id 
          */
         void addLight (Light<VecType>* light);
+
+        void addParticles (std::vector<Particle*> particles) { m_particles = particles; };
 
         /**
          * @brief 
@@ -79,6 +82,8 @@ class Scene {
          */
         std::vector < Light<VecType>* > getListLights () { return m_listLights; }
 
+        std::vector < Particle* > getParticles () { return m_particles; }
+
         /**
          * 
          */
@@ -94,5 +99,6 @@ class Scene {
 
         std::vector < MyObject<VecType>* > m_listObjects;
         std::vector < Light<VecType>* > m_listLights;
+        std::vector < Particle* > m_particles;
 
 };

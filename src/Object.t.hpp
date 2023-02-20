@@ -88,3 +88,4 @@ template <typename VecType>
 void MyObject<VecType>::setColor( glm::vec3 color ){
     m_mat.color = color;
 }
+

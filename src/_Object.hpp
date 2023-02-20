@@ -38,6 +38,9 @@ class MyObject{
         // // //
         // SETTERS
         // // //
+
+        void setType (int type) { m_type = type; }
+
         void setId (int id) { m_id = id; }
 
         void setVertices ( std::vector < VecType > list_vertices );
@@ -50,11 +53,28 @@ class MyObject{
         
         void setIndices ( std::vector < unsigned int > list_indices ) { m_indices = list_indices; }
 
+        void setMinPosition ( VecType minPosition ) { m_minPosition = minPosition; }
+
+        void setMaxPosition ( VecType maxPosition ) { m_maxPosition = maxPosition; }
+
+        void setCenterPosition ( VecType centerPosition ) { m_centerPosition = centerPosition; }
+
+        void setRadius ( float radius ) { m_radius = radius; }
 
         // // //
         // GETTERS
         // // //
+        VecType getMinPosition () { return m_minPosition; }
+
+        VecType getMaxPosition () { return m_maxPosition; }
+
+        VecType getCenterPosition () { return m_centerPosition; }
+
+        float getRadius () { return m_radius; }
+        
         int getId () { return m_id; }
+
+        int getType () { return m_type; }
 
         std::vector < VecType > getVertices () { return m_vertices; }
         
@@ -73,6 +93,8 @@ class MyObject{
         unsigned int* get_EBO () { return &EBO; };
 
     private : 
+        // 0 for cube, 1 for sphere;
+        int m_type = 0;
         int m_id = -1;
         int m_nb_vertices = 0;
         float m_depth = 0;
@@ -83,10 +105,15 @@ class MyObject{
         std::vector < VecType > m_normales;
         std::vector < unsigned int > m_indices;
 
+        VecType m_minPosition = VecType(0.0f);
+        VecType m_maxPosition = VecType(0.0f);
+        VecType m_centerPosition = VecType(0.0f);
+        float m_radius = 0.0f;
 
         // Parametres de matériaux
         glm::vec3 m_color; // Albedo
         Material m_mat;
+
 
 
 };

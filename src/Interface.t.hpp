@@ -26,6 +26,17 @@ void ImGuiInterface<VecType>::draw(float width, float height){
  * @tparam VecType 
  */
 template <typename VecType>
+void ImGuiInterface<VecType>::quit (){
+    m_renderScene->resetGLSL();
+}
+
+/**
+ * @brief 
+ * TODO
+ * 
+ * @tparam VecType 
+ */
+template <typename VecType>
 void ImGuiInterface<VecType>::_drawInterface(){
 
     m_begin_win = m_size_offset;
@@ -40,10 +51,6 @@ void ImGuiInterface<VecType>::_drawInterface(){
         if (m_scene_visible) {
             m_objects_visible = false;
             m_lights_visible = false;
-            m_scene_visible = false;
-        }
-        else {
-            m_scene_visible = true;
         }
         m_scene_visible = ! m_scene_visible;
     }
@@ -279,7 +286,7 @@ void ImGuiInterface<VecType>::_drawNewInformation(float width, float height){
         l->setPosition(position);
         if ( ImGui::Button ("Add it !")) {
             m_renderScene->addLight();
-            m_renderScene->resetShaders();
+            m_renderScene->initShaders();
             m_renderScene->setUp(width, height);
             m_renderScene->setTempLight(nullptr);
             m_renderScene->setTempObject(nullptr);

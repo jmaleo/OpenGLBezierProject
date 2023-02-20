@@ -31,6 +31,8 @@ class ImGuiInterface {
         };
         
         void draw(float width, float height);
+
+        void quit ();
     
     private:
 
@@ -66,7 +68,8 @@ class ImGuiInterface {
         // Variables indicating the visibility of windows.
         bool m_scene_visible = true;
         bool m_lights_visible = true;
-        bool m_objects_visible = true;
+        // bool m_objects_visible = true;
+        bool m_objects_visible = false;
 
         bool m_selected_light = false;
         bool m_selected_object = false;
