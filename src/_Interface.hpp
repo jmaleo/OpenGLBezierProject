@@ -15,9 +15,9 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "structures.hpp"
 #include "Scene.t.hpp"
 #include "Render_scene.t.hpp"
-#include "utils.t.hpp"
 #include "_ControlGLSL.hpp"
 
 
@@ -70,6 +70,7 @@ class ImGuiInterface {
         bool m_lights_visible = true;
         // bool m_objects_visible = true;
         bool m_objects_visible = false;
+        bool m_onlyBright = false;
 
         bool m_selected_light = false;
         bool m_selected_object = false;

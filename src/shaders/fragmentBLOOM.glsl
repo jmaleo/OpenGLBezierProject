@@ -1,49 +1,47 @@
 #version 330 core
-layout (location = 0) out vec4 FragColor;
-layout (location = 1) out vec4 BrightColor;
+out vec4 FragColor;
 
-in VS_OUT {
-    vec3 FragPos;
-    vec3 Normal;
-    vec2 TexCoords;
-} fs_in;
+in vec2 TexCoords;
 
-struct Light {
-    vec3 Position;
-    vec3 Color;
-};
+uniform sampler2D hdrBuffer;
+uniform sampler2D bloomBlur;
+uniform sampler2D brightPixels;
 
-uniform Light lights[4];
-uniform sampler2D diffuseTexture;
-uniform vec3 viewPos;
+uniform bool hdr;
+uniform bool bloom;
+uniform bool OnlyBright;
+uniform float exposure;
 
 void main()
-{           
-    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
-    vec3 normal = normalize(fs_in.Normal);
-    // ambient
-    vec3 ambient = 0.0 * color;
-    // lighting
-    vec3 lighting = vec3(0.0);
-    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-    for(int i = 0; i < 4; i++)
-    {
-        // diffuse
-        vec3 lightDir = normalize(lights[i].Position - fs_in.FragPos);
-        float diff = max(dot(lightDir, normal), 0.0);
-        vec3 result = lights[i].Color * diff * color;      
-        // attenuation (use quadratic as we have gamma correction)
-        float distance = length(fs_in.FragPos - lights[i].Position);
-        result *= 1.0 / (distance * distance);
-        lighting += result;
-                
+{             
+    const float gamma = 2.2;
+    // const float gamma = 1.0;
+    vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
+    vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
+    vec3 brightColor = texture(brightPixels, TexCoords).rgb;
+
+    if (OnlyBright){
+        FragColor = vec4(brightColor, 1.0);
+        return;
     }
-    vec3 result = ambient + lighting;
-    // check whether result is higher than some threshold, if so, output as bloom threshold color
-    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1.0)
-        BrightColor = vec4(result, 1.0);
+
+    if (bloom)
+        hdrColor += bloomColor;
+        
+    if(hdr)
+    {
+        // reinhard
+        // vec3 result = hdrColor / (hdrColor + vec3(1.0));
+        // exposure
+        vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
+        // also gamma correct while we're at it       
+        result = pow(result, vec3(1.0 / gamma));
+        FragColor = vec4(result, 1.0);
+    }
     else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-    FragColor = vec4(result, 1.0);
+    {   
+        // vec3 result = pow(hdrColor, vec3(1.0 / gamma));
+        // FragColor = vec4(result, 1.0);
+        FragColor = vec4(hdrColor, 1.0);
+    }
 }

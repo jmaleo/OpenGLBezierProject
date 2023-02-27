@@ -26,7 +26,7 @@ Scene<VecType>::~Scene(){
  * @param id 
  */
 template<typename VecType>
-void Scene<VecType>::addObject (MyObject<VecType>* obj){
+void Scene<VecType>::addObject (Object<VecType>* obj){
     obj->setId(m_lastId_object);
     m_listObjects.push_back(obj);
     m_lastId_object += 1;

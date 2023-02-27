@@ -14,9 +14,9 @@
 #include "ShaderProgram.h"
 #include "Camera.h"
 
-#include "Particle.t.hpp"
-#include "Object.t.hpp"
 #include "Scene.t.hpp"
+#include "Object.t.hpp"
+#include "Light.t.hpp"
 #include "Render.t.hpp"
 #include "_ControlGLSL.hpp"
 
@@ -50,6 +50,8 @@ class RenderScene {
 
         void setBloom (bool b) { m_bloom = b; }
 
+        void setOnlyBright (bool b) { m_onlyBright = b; }
+
         void setMaterial (int id, Material mat);
 
         void setLightColor(int id, float* color);
@@ -63,10 +65,10 @@ class RenderScene {
         void setLightSelected (int id);
 
         void setTempLight (Light<VecType>* l ) { m_temp_light = l; }
-        void setTempObject (MyObject<VecType>* o ) { m_temp_object = o; }
+        void setTempObject (Object<VecType>* o ) { m_temp_object = o; }
 
         Light<VecType>* getTempLight () { return m_temp_light; }
-        MyObject<VecType>* getTempObject () { return m_temp_object; }
+        Object<VecType>* getTempObject () { return m_temp_object; }
 
         glm::vec3 getCameraPosition () { return m_myScene->getCamera()->Position; }
 
@@ -87,6 +89,12 @@ class RenderScene {
         std::string m_vertexShaderHDR_name = "vertexHDR.glsl";
         std::string m_fragmentShaderHDR_name = "fragmentHDR.glsl";
 
+        std::string m_vertexShaderBloom_name = "vertexBLOOM.glsl";
+        std::string m_fragmentShaderBloom_name = "fragmentBLOOM.glsl";
+
+        std::string m_vertexShaderBlur_name = "vertexBLUR.glsl";
+        std::string m_fragmentShaderBlur_name = "fragmentBLUR.glsl";
+
         std::string m_path_vertexShader = SHADER_DIR + m_vertexShader_name;
         std::string m_path_fragmentShader = SHADER_DIR + m_fragmentShader_name;
 
@@ -96,6 +104,11 @@ class RenderScene {
         std::string m_path_vertexShaderHDR = SHADER_DIR + m_vertexShaderHDR_name;
         std::string m_path_fragmentShaderHDR = SHADER_DIR + m_fragmentShaderHDR_name;
 
+        std::string m_path_vertexShaderBloom = SHADER_DIR + m_vertexShaderBloom_name;
+        std::string m_path_fragmentShaderBloom = SHADER_DIR + m_fragmentShaderBloom_name;
+
+        std::string m_path_vertexShaderBlur = SHADER_DIR + m_vertexShaderBlur_name;
+        std::string m_path_fragmentShaderBlur = SHADER_DIR + m_fragmentShaderBlur_name;
 
         // Used to debug for instance.
         ShaderProgram* m_shaderObj;
@@ -104,12 +117,16 @@ class RenderScene {
 
         ShaderProgram* m_shaderHDR;
 
+        ShaderProgram* m_shaderBloom;
+
+        ShaderProgram* m_shaderBlur;
+
 
         Render<VecType>* m_render;
         Scene<VecType>* m_myScene;
 
         Light<VecType>* m_temp_light = nullptr;
-        MyObject<VecType>* m_temp_object = nullptr;
+        Object<VecType>* m_temp_object = nullptr;
 
         int m_selected = -1;
         bool m_selected_object = false;
@@ -118,6 +135,7 @@ class RenderScene {
         bool m_hdr = true;
         bool m_bloom = true;
         float m_exposure = 2.0f;
+        bool m_onlyBright = false;
 
         void m_setUpObjects ();
 

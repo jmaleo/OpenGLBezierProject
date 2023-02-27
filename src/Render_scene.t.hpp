@@ -12,8 +12,9 @@ RenderScene<VecType>::RenderScene(Scene<VecType>* scene) {
 
 template<typename VecType>
 void RenderScene<VecType>::setUp(float src_width, float src_height){
-    m_render->setUp_FBO(src_width, src_height);
-    m_render->setUp_quad();
+    // m_render->setUp_FBO(src_width, src_height);
+    m_render->setUp_BLOOM(src_width, src_height);
+    // m_render->setUp_quad();
     
     m_setUpLights();
     m_setUpObjects();
@@ -24,7 +25,7 @@ void RenderScene<VecType>::setUp(float src_width, float src_height){
  */
 template<typename VecType>
 void RenderScene<VecType>::m_setUpObjects(){
-    std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
+    std::vector <Object<VecType>*> objs = m_myScene->getListObjects();
     for (auto obj : objs){
         m_render->setUp_Object(obj);
     }
@@ -51,6 +52,7 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
     // Bind le frame buffer de base
     m_render->bind_HDR();
 
+    // Be Carreful, into the drawObject function, we take into account the particles.
     switch (selection){ // Rendre les objets
         case (1) :
             m_drawObjects(width, height);
@@ -64,31 +66,39 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
             break;
         default : break;
     }
-    update_particles(m_myScene->getParticles(), 1, m_myScene);
-    m_render->draw_Particles(m_myScene->getParticles(), m_shaderLight, width, height);
-
-    // std::cout << "Error : " << glGetError() << std::endl;
-
     m_draw_new(width, height, selection);
+    
     m_render->unbind_HDR();
+    std::cout << "Draw error : " << glGetError() << std::endl;
 
-    // Effectuer le rendu HDR;
-    m_render->draw_HDR(m_shaderHDR, width, height, (int16_t)m_hdr, m_exposure);
+    // BLUR THE FRAME BUFFER
+    m_render->blur (m_shaderBlur, (unsigned int) width, (unsigned int) height, 5);
 
-    // Recuperer le frame buffer, appliquer le bloom
-
-    // rendre le tout.
+    // Only hdr
+    // m_render->draw_HDR(m_shaderHDR, width, height, (int16_t)m_hdr, m_exposure);
+    
+    // Effectuer le rendu HDR avec BLOOM;
+    m_render->draw_BLOOM (m_shaderBloom, width, height, (int16_t)m_hdr, m_exposure, (int16_t)m_bloom, m_onlyBright);
 }
 
 
 template<typename VecType>
 void RenderScene<VecType>::m_drawObjects(float width, float height){
-    std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
+    std::vector <Object<VecType>*> objs = m_myScene->getListObjects();
     std::vector <Light<VecType>*> lights = m_myScene->getListLights();    
 
     for (auto obj : objs){
         if (!m_selected_object || m_selected != obj->getId())
             m_render->draw_Object(obj, lights, m_shaderObj, width, height);
+        if (obj->isContainer()){
+            if (obj->getContainer()->get_number_particles() == 0){
+                m_render->draw_Object(obj, lights, m_shaderObj, width, height);
+            }
+            else {
+                // obj->getContainer()->update(0.1f);
+                // m_render->draw_Particles(obj, m_shaderLight, width, height);
+            }
+        }
     }
     if (m_selected_object)
         m_drawObjSelection(m_selected, width, height);
@@ -108,7 +118,7 @@ void RenderScene<VecType>::m_drawLights(float width, float height){
 
 template<typename VecType>
 void RenderScene<VecType>::m_drawObjSelection (int id, float width, float height){
-    std::vector <MyObject<VecType>*> objs = m_myScene->getListObjects();
+    std::vector <Object<VecType>*> objs = m_myScene->getListObjects();
     std::vector <Light<VecType>*> lights = m_myScene->getListLights();
     for (auto obj : objs){
         if (obj->getId() == id){
@@ -255,4 +265,17 @@ void RenderScene<VecType>::initShaders(){
     m_shaderLight = new ShaderProgram(m_path_vertexShaderLight.c_str(), m_path_fragmentShaderLight.c_str());
 
     m_shaderHDR = new ShaderProgram(m_path_vertexShaderHDR.c_str(), m_path_fragmentShaderHDR.c_str());
+
+    m_shaderBloom = new ShaderProgram(m_path_vertexShaderBloom.c_str(), m_path_fragmentShaderBloom.c_str());
+
+    m_shaderBlur = new ShaderProgram(m_path_vertexShaderBlur.c_str(), m_path_fragmentShaderBlur.c_str());
+
+
+    m_shaderBlur->use();
+    m_shaderBlur->setInt("image", 0);
+    
+    m_shaderBloom->use();
+    m_shaderBloom->setInt("hdrBuffer", 0);
+    m_shaderBloom->setInt("bloomBlur", 1);
+    m_shaderBloom->setInt("brightPixels", 2);
 }

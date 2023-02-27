@@ -7,17 +7,17 @@
  * @tparam VecType 
  */
 template<typename VecType>
-MyObject<VecType>::MyObject ( int id,  std::vector < VecType > list_vertices, 
+Object<VecType>::Object ( int id,  std::vector < VecType > list_vertices, 
     std::vector < VecType > list_normales, 
         glm::vec3 color, 
             std::vector < unsigned int > list_indices ){
     m_id = id;
+    m_mat = initialiseMaterial();
     setVertices(list_vertices);
     setNormales(list_normales);
     setColor(color);
     setIndices(list_indices);
 
-    m_mat = initialiseMaterial();
 
     m_depth = glm::distance(list_vertices[4], list_vertices[1]);
     m_width = glm::distance(list_vertices[2], list_vertices[14]);
@@ -25,7 +25,7 @@ MyObject<VecType>::MyObject ( int id,  std::vector < VecType > list_vertices,
 }
 
 template<typename VecType>
-MyObject<VecType>::MyObject ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices ){
+Object<VecType>::Object ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices ){
     
     m_id = id;
     setVertices(list_vertices);
@@ -44,7 +44,7 @@ MyObject<VecType>::MyObject ( int id, std::vector < VecType > list_vertices, std
  * @tparam VecType 
  */
 template<typename VecType>
-MyObject<VecType>::~MyObject(){
+Object<VecType>::~Object(){
     m_vertices.clear();
     m_indices.clear();
     m_normales.clear();
@@ -58,7 +58,7 @@ MyObject<VecType>::~MyObject(){
  * @param list_vertices 
  */
 template <typename VecType>
-void MyObject<VecType>::setVertices ( std::vector < VecType > list_vertices ){
+void Object<VecType>::setVertices ( std::vector < VecType > list_vertices ){
     m_vertices = list_vertices;
     m_nb_vertices = m_vertices.size();
 }
@@ -70,7 +70,7 @@ void MyObject<VecType>::setVertices ( std::vector < VecType > list_vertices ){
  * @param list_normales 
  */
 template <typename VecType>
-void MyObject<VecType>::setNormales( std::vector < VecType > list_normales ){
+void Object<VecType>::setNormales( std::vector < VecType > list_normales ){
     if ( list_normales.size() != m_nb_vertices ) {
         std::cerr << "You can't add a list of normales for a different number of vertices." << std::endl;
         return;
@@ -85,7 +85,7 @@ void MyObject<VecType>::setNormales( std::vector < VecType > list_normales ){
  * @param list_colors 
  */
 template <typename VecType>
-void MyObject<VecType>::setColor( glm::vec3 color ){
+void Object<VecType>::setColor( glm::vec3 color ){
     m_mat.color = color;
 }
 

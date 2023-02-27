@@ -80,7 +80,7 @@ void ImGuiInterface<VecType>::_drawScene(){
     ImGui::SameLine();
     ImGui::Text((m_hdr ?"On":"Off"));
 
-    ImGui::SliderFloat("Exposure", m_renderScene->getExposure(), 0.0f, 10.0f);
+    ImGui::SliderFloat("Exposure", m_renderScene->getExposure(), 0.1f, 10.0f);
 
     if ( ImGui::Button ("Bloom") ){
         m_bloom = !m_bloom;
@@ -88,6 +88,13 @@ void ImGuiInterface<VecType>::_drawScene(){
     }
     ImGui::SameLine();
     ImGui::Text((m_bloom ?"On":"Off"));
+
+    if ( ImGui::Button ("OnlyBright") ){
+        m_onlyBright = !m_onlyBright;
+        m_renderScene->setOnlyBright(m_onlyBright);
+    }
+    ImGui::SameLine();
+    ImGui::Text((m_onlyBright ?"On":"Off"));
 
     if ( ImGui::Button ( "Show objects") ) {
         m_objects_visible = ! m_objects_visible;
@@ -259,7 +266,7 @@ void ImGuiInterface<VecType>::_drawNewInformation(float width, float height){
 
     ImGui::Begin("New thing");
 
-    MyObject<VecType>* o = m_renderScene->getTempObject();
+    Object<VecType>* o = m_renderScene->getTempObject();
     Light<VecType>* l = m_renderScene->getTempLight();
 
     if (o != nullptr){

@@ -8,32 +8,20 @@
 #include <fstream>
 #include <string>
 
-struct s_material {
-    glm::vec3 color = glm::vec3(0.0f);
-    float metallic = 0.3f;
-    float roughness = 0.8f;
-    float ao = 0.5f;
-}typedef Material;
+#include "structures.hpp"
+#include "ParticlesContainer.t.hpp"
 
-Material initialiseMaterial (){
-    Material mat;
-    mat.color = glm::vec3(0.2f);
-    mat.metallic = 0.8f;
-    mat.roughness = 0.2f;
-    mat.ao = 0.5f;
-    return mat;
-}
-
-// VecType like glm::vec2 or glm::vec3
+// VecType like glm::vec2 or glm::vec3 
+// FOR THE MOMENT, THIS CLASS IS ONLY FOR CUBE (3D). Maybe, it could be interesting to make it generic for all kind of object and implements sub classes for each kind of object.
 template<typename VecType>
-class MyObject{
+class Object{
 
     public : 
-        MyObject ( int id ) { m_id = id; }
-        MyObject ( int id, std::vector < VecType > list_vertices, std::vector < VecType > list_normales, glm::vec3 color, std::vector < unsigned int > list_indices );
-        MyObject ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices );
+        Object ( int id ) { m_id = id; }
+        Object ( int id, std::vector < VecType > list_vertices, std::vector < VecType > list_normales, glm::vec3 color, std::vector < unsigned int > list_indices );
+        Object ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices );
 
-        virtual ~MyObject ();
+        virtual ~Object ();
 
         // // //
         // SETTERS
@@ -57,20 +45,12 @@ class MyObject{
 
         void setMaxPosition ( VecType maxPosition ) { m_maxPosition = maxPosition; }
 
-        void setCenterPosition ( VecType centerPosition ) { m_centerPosition = centerPosition; }
-
-        void setRadius ( float radius ) { m_radius = radius; }
-
         // // //
         // GETTERS
         // // //
         VecType getMinPosition () { return m_minPosition; }
 
         VecType getMaxPosition () { return m_maxPosition; }
-
-        VecType getCenterPosition () { return m_centerPosition; }
-
-        float getRadius () { return m_radius; }
         
         int getId () { return m_id; }
 
@@ -92,8 +72,15 @@ class MyObject{
 
         unsigned int* get_EBO () { return &EBO; };
 
+
+
+        bool isContainer () { return !(m_container == nullptr); }
+        ParticlesContainer* getContainer () { return m_container; }
+        void setContainer (ParticlesContainer* container) { m_container = container; }
+
+
     private : 
-        // 0 for cube, 1 for sphere;
+        // 0 for cube, 1 for other;
         int m_type = 0;
         int m_id = -1;
         int m_nb_vertices = 0;
@@ -107,12 +94,12 @@ class MyObject{
 
         VecType m_minPosition = VecType(0.0f);
         VecType m_maxPosition = VecType(0.0f);
-        VecType m_centerPosition = VecType(0.0f);
-        float m_radius = 0.0f;
 
         // Parametres de matériaux
-        glm::vec3 m_color; // Albedo
         Material m_mat;
+
+        // Particles container
+        ParticlesContainer* m_container = nullptr;
 
 
 
