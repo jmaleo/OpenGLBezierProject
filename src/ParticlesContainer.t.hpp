@@ -7,7 +7,7 @@ ParticlesContainer::ParticlesContainer(int nb_particles_per_side, glm::vec3 pos_
     m_carac = initialiseCaracParticle();
     m_mat = initialiseMaterial();
 
-    m_carac.velocity = glm::vec3(0.0f, -0.1f, 0.0f);
+    m_carac.velocity = glm::vec3(0.0f, -0.1f, 0.05f);
     m_carac.acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
 
     m_pos_max = pos_max;
@@ -33,19 +33,19 @@ std::vector < glm::vec3 > ParticlesContainer::get_positions(){
 void ParticlesContainer::update (float dt){
     CaracParticle* current_carac;
 
-    // m_particles_collisions ();
+    m_particles_collisions ();
     m_create_voxelGrid ();
 
-    for (int i = 0; i < m_particles.size(); i++) {
-        m_particles[i].update();
-    }
+    // for (int i = 0; i < m_particles.size(); i++) {
+    //     m_particles[i].update();
+    // }
 
     for (int i = 0; i < m_particles.size(); i++) {
         // update the particles 
         current_carac = m_particles[i].get_carac();
-        // current_carac->position += current_carac->velocity * dt;
-        // current_carac->velocity += current_carac->acceleration * dt;
-        // current_carac->acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
+        current_carac->position += current_carac->velocity * dt;
+        current_carac->velocity += current_carac->acceleration * dt;
+        current_carac->acceleration = glm::vec3(0.0f, 0.0f , 0.0f);
         // check if the particles are out of the box
         if (current_carac->position.x > m_pos_max.x) {
             current_carac->position.x = m_pos_max.x;
@@ -102,13 +102,20 @@ void ParticlesContainer::m_create_particles (int nb_particles_per_side){
         }
     }
 }
+
 void ParticlesContainer::m_create_voxelGrid (){
     float spacing = 2 * m_carac.size;
     int numx = ceil (m_pos_max.x - m_pos_min.x) / spacing;
     int numy = ceil (m_pos_max.y - m_pos_min.y) / spacing;
     int numz = ceil (m_pos_max.z - m_pos_min.z) / spacing;
-    m_voxelGrid.clear();
-    m_voxelGrid.resize((numx) * (numy) * (numz));
+    
+    if (m_voxelGrid.size() != (numx) * (numy) * (numz))
+        m_voxelGrid.resize((numx) * (numy) * (numz));
+
+    for (int i = 0; i < m_voxelGrid.size(); i++) {
+        m_voxelGrid[i].clear();
+        // std::cout << "Taille du voxel " << i << " : " << m_voxelGrid[i].size() << std::endl;
+    }
 
     for (int i = 0; i < m_particles.size(); i++) {
         glm::vec3 pos = m_particles[i].get_carac()->position;
@@ -117,6 +124,9 @@ void ParticlesContainer::m_create_voxelGrid (){
         int y = floor (pos.y - m_pos_min.y) / spacing;
         int z = floor (pos.z - m_pos_min.z) / spacing;
         int index = x + y * numx + z * numx * numy;
+        if (index >= m_voxelGrid.size()) {
+            index = m_voxelGrid.size() - 1;
+        }
         m_voxelGrid[index].push_back(i);
     }
 }
@@ -130,4 +140,44 @@ bool ParticlesContainer::is_in_collision (Particle p1, Particle p2){
     }
     return false;
 
+}
+
+// this function check the collision between particles
+void ParticlesContainer::m_particles_collisions(){
+    float spacing = 2 * m_carac.size;
+    int numx = ceil (m_pos_max.x - m_pos_min.x) / spacing;
+    int numy = ceil (m_pos_max.y - m_pos_min.y) / spacing;
+    int numz = ceil (m_pos_max.z - m_pos_min.z) / spacing;
+
+    for (int i = 0; i < m_particles.size(); i++) {
+        glm::vec3 pos = m_particles[i].get_carac()->position;
+
+        int x = floor (pos.x - m_pos_min.x) / spacing;
+        int y = floor (pos.y - m_pos_min.y) / spacing;
+        int z = floor (pos.z - m_pos_min.z) / spacing;
+        int index = x + y * numx + z * numx * numy;
+
+        for (int j = 0; j < m_voxelGrid[index].size(); j++) {
+            if (index >= m_voxelGrid.size()) {
+                index = m_voxelGrid.size() - 1;
+            }
+            int index2 = m_voxelGrid[index][j];
+            if (index2 != i) {
+                if (is_in_collision(m_particles[i], m_particles[index2])) {
+                    glm::vec3 v1 = m_particles[i].get_carac()->velocity;
+                    glm::vec3 v2 = m_particles[index2].get_carac()->velocity;
+                    glm::vec3 p1 = m_particles[i].get_carac()->position;
+                    glm::vec3 p2 = m_particles[index2].get_carac()->position;
+                    glm::vec3 n = glm::normalize(p2 - p1);
+                    glm::vec3 v1n = glm::dot(v1, n) * n;
+                    glm::vec3 v1t = v1 - v1n;
+                    glm::vec3 v2n = glm::dot(v2, n) * n;
+                    glm::vec3 v2t = v2 - v2n;
+                    m_particles[i].get_carac()->velocity = v1t + v2n;
+                    m_particles[index2].get_carac()->velocity = v2t + v1n;
+                }
+            }
+        }
+        
+    }
 }

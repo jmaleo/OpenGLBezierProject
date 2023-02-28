@@ -32,14 +32,13 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
     // Back light, HIGH INTENSITY
     myScene->addLight(new Light<glm::vec3> (3, glm::vec3(0, length/8.5, +length/3), glm::vec3(200.0f, 100.0f, 20.0f)));
 
-    ParticlesContainer *container = new ParticlesContainer(5, rightCube->getMinPosition(), rightCube->getMaxPosition());
-    rightCube->setContainer(container);
+    ParticlesContainer *container = new ParticlesContainer(15, leftCube->getMinPosition(), leftCube->getMaxPosition());
+    leftCube->setContainer(container);
     
-    
-    std::vector <Object<glm::vec3> *> grid = (create_grid_objects(rightCube, container->get_size()));
-    for (int i = 0; i < grid.size(); i++){
-        myScene->addObject(grid[i]);
-    }
+    // std::vector <Object<glm::vec3> *> grid = (create_grid_objects(rightCube, container->get_size()));
+    // for (int i = 0; i < grid.size(); i++){
+    //     myScene->addObject(grid[i]);
+    // }
 
     // display in which grid the m_pos_min and m_pos_max are with the index of the grid
     glm::vec3 first_pos = glm::vec3(length/8, demi_length/8, -demi_length);

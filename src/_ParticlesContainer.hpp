@@ -24,8 +24,8 @@ class ParticlesContainer {
 
         std::vector < glm::vec3 > get_positions();
 
-        glm::vec3 get_color() { return m_particles[0].get_material()->color; }
-        float get_size() { return m_particles[0].get_carac()->size; }
+        glm::vec3 get_color() { return m_mat.color; }
+        float get_size() { return m_carac.size; }
 
         unsigned int* get_particleVAO() { return &particleVAO; }
 
@@ -61,8 +61,7 @@ class ParticlesContainer {
         void m_create_particles (int nb_particles_per_side);
         void m_create_voxelGrid ();
 
-        // void m_particles_collisions ();
+        void m_particles_collisions ();
         // void resolve_collision (Particle* p1, Particle* p2);
         bool is_in_collision (Particle p1, Particle p2);
-
 };

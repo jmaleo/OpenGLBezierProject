@@ -14,7 +14,7 @@ template<typename VecType>
 void RenderScene<VecType>::setUp(float src_width, float src_height){
     // m_render->setUp_FBO(src_width, src_height);
     m_render->setUp_BLOOM(src_width, src_height);
-    // m_render->setUp_quad();
+    m_render->setUp_quad();
     
     m_setUpLights();
     m_setUpObjects();
@@ -68,8 +68,8 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
     }
     m_draw_new(width, height, selection);
     
-    m_render->unbind_HDR();
-    std::cout << "Draw error : " << glGetError() << std::endl;
+    // m_render->unbind_HDR();
+    // std::cout << "Draw error : " << glGetError() << std::endl;
 
     // BLUR THE FRAME BUFFER
     m_render->blur (m_shaderBlur, (unsigned int) width, (unsigned int) height, 5);
@@ -95,8 +95,8 @@ void RenderScene<VecType>::m_drawObjects(float width, float height){
                 m_render->draw_Object(obj, lights, m_shaderObj, width, height);
             }
             else {
-                // obj->getContainer()->update(0.1f);
-                // m_render->draw_Particles(obj, m_shaderLight, width, height);
+                obj->getContainer()->update(0.1f);
+                m_render->draw_Particles(obj, m_shaderLight, width, height);
             }
         }
     }
