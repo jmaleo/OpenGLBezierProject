@@ -38,6 +38,24 @@ Object<VecType>::Object ( int id, std::vector < VecType > list_vertices, std::ve
     m_height = glm::distance(list_vertices[2], list_vertices[11]);
 }
 
+template<typename VecType>
+Object<VecType>::Object (bool cube, VecType position, float size){
+    m_id = 1000;
+    m_mat = initialiseMaterial();
+    m_depth = size;
+    m_width = size;
+    m_height = size;
+    if (cube){
+        setVertices(generateCubeVertices(position, size, size));
+        setIndices(generateCubeIndices());
+        setNormales(generateCubeNormales(true));
+        m_minPosition = m_vertices[3];
+        m_maxPosition = m_vertices[5];
+    }
+    
+
+}
+
 /**
  * @brief Destroy the My Object< Vec Type>:: My Object object
  * 
@@ -89,3 +107,10 @@ void Object<VecType>::setColor( glm::vec3 color ){
     m_mat.color = color;
 }
 
+template <typename VecType>
+void Object<VecType>::translate ( VecType translation ){
+    for ( int i = 0; i < m_nb_vertices; i++ ) {
+        m_vertices[i] += translation;
+    }
+    translated = true;
+}

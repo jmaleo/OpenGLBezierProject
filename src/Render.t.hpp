@@ -355,11 +355,11 @@ void Render<VecType>::draw_Particles(Object<VecType> *obj, ShaderProgram *shader
 {
 
     ParticlesContainer *container = obj->getContainer();
-    // container->update(0.1f);
 
     unsigned int *particleVAO = container->get_particleVAO();
     unsigned int *particleVBO = container->get_particleVBO();
     std::vector<glm::vec3> vertices = container->get_positions();
+    // std::cout << "Size of vertices : " << vertices.size() << std::endl;
 
     if (container->is_setUp() == false)
     {

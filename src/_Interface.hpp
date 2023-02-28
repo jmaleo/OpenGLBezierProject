@@ -48,6 +48,9 @@ class ImGuiInterface {
         // Function that displays the pannel for lights.
         void _drawLights();
 
+        // Function that displays the pannel for particles.
+        void _drawParticles();
+
         // Function that draw the openGL frame, following the interface.
         void _drawFrame(float width, float heigth);
 
@@ -68,10 +71,12 @@ class ImGuiInterface {
         // Variables indicating the visibility of windows.
         bool m_scene_visible = true;
         bool m_lights_visible = true;
-        // bool m_objects_visible = true;
-        bool m_objects_visible = false;
+        bool m_objects_visible = true;
+        bool m_particles_visible = true;
+        // bool m_objects_visible = false;
         bool m_onlyBright = false;
 
+        bool m_new_selection = true;
         bool m_selected_light = false;
         bool m_selected_object = false;
         int m_selected = -1;
@@ -84,7 +89,14 @@ class ImGuiInterface {
 
         // Variables for the object's material
         Material* m_selected_mat;
+        glm::vec3 m_selected_position;
 
         bool m_newThing = false;
         VecType first_position;
+
+        // Particles
+        bool m_stopParticles = true;
+        float m_deltaTime = 0.1f;
+        int m_nbParticles = 1000;
+        bool m_uniform = true;
 };

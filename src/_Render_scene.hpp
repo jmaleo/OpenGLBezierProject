@@ -42,6 +42,8 @@ class RenderScene {
 
         Material* getMaterial (int id);
 
+        VecType getPosition(int id, bool obj);
+
         float* getExposure () { return &m_exposure; }
 
         glm::vec3 getLightColor(int id);
@@ -77,6 +79,21 @@ class RenderScene {
         void resetGLSL();
 
         void initGLSL();
+
+        void setStopParticles (bool b) { m_stopParticles = b; }
+
+        void setDeltaTime (float dt) { m_deltaTime = dt; }
+
+        void setParticlesVisible (bool b) { m_particlesVisible = b; }
+
+        // Position : 1 for uniform disposition and 0 for the center.
+        void resetParticles (int nbParticles, int position);
+
+        bool isContainer(int id);
+
+        void setObjPosition(int id, VecType pos);
+
+        void setLightPosition(int id, VecType pos);
 
     private:
 
@@ -131,6 +148,10 @@ class RenderScene {
         int m_selected = -1;
         bool m_selected_object = false;
         bool m_selected_light = false;
+
+        bool m_particlesVisible = true;
+        bool m_stopParticles = true;
+        float m_deltaTime = 0.1f;
 
         bool m_hdr = true;
         bool m_bloom = true;

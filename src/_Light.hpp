@@ -18,6 +18,10 @@ class Light {
             m_col = color;
         }
 
+        void translate (VecType translation) { m_pos += translation; translated = true;}
+
+        bool isTranslated () { return translated; }
+
         // getter
         int getId () { return m_id; }
 
@@ -32,14 +36,17 @@ class Light {
         // Setter 
         void setId (int id) { m_id = id; }
 
-        void setPosition (VecType position) { m_pos = position; }
+        void setPosition (VecType position) { m_pos = position;}
 
         void setColor (VecType color) { m_col = color; }
+
 
     private :
         int m_id = -1;
         VecType m_pos;
         glm::vec3 m_col;
+
+        bool translated = false;
 
         unsigned int VAO, VBOposition;
 };

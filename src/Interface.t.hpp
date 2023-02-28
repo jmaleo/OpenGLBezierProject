@@ -12,6 +12,7 @@ void ImGuiInterface<VecType>::draw(float width, float height){
     _drawScene();
     _drawObject();
     _drawLights();
+    _drawParticles();
     _drawSelectInformation();
     _drawNewInformation(width, height);
 
@@ -51,6 +52,8 @@ void ImGuiInterface<VecType>::_drawInterface(){
         if (m_scene_visible) {
             m_objects_visible = false;
             m_lights_visible = false;
+            m_particles_visible = false;
+            m_renderScene->setParticlesVisible(false);
         }
         m_scene_visible = ! m_scene_visible;
     }
@@ -104,6 +107,14 @@ void ImGuiInterface<VecType>::_drawScene(){
         m_lights_visible = ! m_lights_visible;
     }
 
+    if ( ImGui::Button ( "Show particles" ) ) {
+        if (m_particles_visible) {
+            m_stopParticles = true;
+        }
+        m_particles_visible = ! m_particles_visible;
+        m_renderScene->setParticlesVisible(m_particles_visible);
+    }
+
     ImGui::End();
 
 }
@@ -129,6 +140,7 @@ void ImGuiInterface<VecType>::_drawObject(){
         if (!m_selected_object || m_selected != id){
             std::string button_name = "Object " + std::to_string(id);
             if (ImGui::Button((button_name).c_str())){
+                m_new_selection = true;
                 m_selected = id;
                 m_selected_object = true;
                 m_selected_light = false;
@@ -146,12 +158,22 @@ void ImGuiInterface<VecType>::_drawObject(){
 
     ImGui::Separator();
 
-    if ( ImGui::Button ( "Add Object" ) ) {
-        glm::vec3 camPos = m_renderScene->getCameraPosition();
-        m_renderScene->setTempObject(nullptr);
-        m_newThing = true;
-        m_renderScene->setTempLight(nullptr);
-    }
+    // if ( ImGui::Button ( "Add Object" ) ) {
+    //     glm::vec3 camPos = m_renderScene->getCameraPosition();
+    //     m_renderScene->setTempObject(nullptr);
+    //     m_newThing = true;
+    //     m_renderScene->setTempLight(nullptr);
+    // }
+
+    // if ( ImGui::Button ( "Add Object" ) ) {
+    //     glm::vec3 camPos = m_renderScene->getCameraPosition();
+    //     glm::vec3 min_position = glm::vec3 (camPos[0], camPos[1], camPos[2] - 10);
+    //     m_renderScene->setTempLight(nullptr);
+    //     Object<glm::vec3>* obj = new Object<glm::vec3>(true, min_position, 2.0f);
+    //     m_renderScene->setTempObject(obj);
+    //     m_newThing = true;
+    //     first_position = obj->getMinPosition();
+    // }
 
     ImGui::End();
 
@@ -178,6 +200,7 @@ void ImGuiInterface<VecType>::_drawLights(){
         if (!m_selected_light || m_selected != id){
             std::string button_name = "Light " + std::to_string(id);
             if (ImGui::Button(button_name.c_str())){
+                m_new_selection = true;
                 m_selected = id;
                 m_selected_light = true;
                 m_selected_object = false;
@@ -207,6 +230,50 @@ void ImGuiInterface<VecType>::_drawLights(){
     ImGui::End();
 }
 
+/**
+ * @brief 
+ * TODO
+ * 
+ */
+template<typename VecType>
+void ImGuiInterface<VecType>::_drawParticles(){
+    if ( !m_particles_visible ) return;
+
+    m_begin_win += (m_size_width + m_size_offset);
+
+    ImGui::SetNextWindowPos( ImVec2( m_begin_win, m_size_offset ) );
+    ImGui::SetNextWindowSize( ImVec2( m_size_width, 0) );
+    ImGui::Begin("Test_Interface_Particles", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+
+    if ( ImGui::Button ("simulation") ){
+        m_stopParticles = !m_stopParticles;
+        m_renderScene->setStopParticles(m_stopParticles);
+    }
+    ImGui::SameLine();
+    ImGui :: Text ( ( !m_stopParticles ? "On" : "Off" ) );
+
+    ImGui::SliderFloat("time", &m_deltaTime, 0.01f, 1.0f);
+    m_renderScene->setDeltaTime(m_deltaTime);
+
+
+    ImGui::Separator();
+    ImGui::SliderInt("Nb Particles", &m_nbParticles, 1, 2000);
+    
+    if (ImGui::Button (m_uniform?"Uniform Distribution":"Center Distribution")){
+        m_uniform = !m_uniform;
+    }
+
+    if ( ImGui::Button ("reset") ){
+        m_renderScene->resetParticles(m_nbParticles, (int)m_uniform);
+    }
+
+
+
+    ImGui::End();
+}
+
+
 template<typename VecType>
 void ImGuiInterface<VecType>::_drawFrame(float width, float height){
     if (!m_scene_visible){ return; }
@@ -226,12 +293,16 @@ template<typename VecType>
 void ImGuiInterface<VecType>::_drawSelectInformation(){
     if (m_selected == -1) {
         m_selected_mat = nullptr;
+        m_selected_position = glm::vec3(0.0f);
         return; 
     }
 
     ImGui::Begin("Informations");
 
     if (m_selected_object){
+        if (m_new_selection || m_selected_position == glm::vec3(0.0f))
+            m_selected_position = m_renderScene->getPosition(m_selected, true);
+        
         m_selected_mat = m_renderScene->getMaterial(m_selected);
         if (m_selected_mat == nullptr){
             std::cout << "Material not found" << std::endl;
@@ -245,16 +316,31 @@ void ImGuiInterface<VecType>::_drawSelectInformation(){
         ImGui::SliderFloat ("ao", &(m_selected_mat->ao), 0.0f, 1.0f);
 
         m_selected_mat->color = glm::vec3(color[0], color[1], color[2]);
+
+        if (!m_renderScene->isContainer(m_selected)){
+            ImGui::SliderFloat("X", &(m_selected_position[0]), -50.0f, 50.0f);
+            ImGui::SliderFloat("Y", &(m_selected_position[1]), -50.0f, 50.0f);
+            ImGui::SliderFloat("Z", &(m_selected_position[2]), -50.0f, 50.0f);
+            if (m_selected_position != m_renderScene->getPosition(m_selected, true)){
+                m_renderScene->setObjPosition(m_selected, m_selected_position);
+            }
+        }
     }
 
     if (m_selected_light){
+        if (m_new_selection || m_selected_position == glm::vec3(0.0f))
+            m_selected_position = m_renderScene->getPosition(m_selected, false);
         glm::vec3 light_color = m_renderScene->getLightColor(m_selected);
         float color[3] = {light_color[0], light_color[1], light_color[2] };
         ImGui::ColorEdit3 ("Color", color);
         m_renderScene->setLightColor(m_selected, color);
+        ImGui::SliderFloat("X", &(m_selected_position[0]), -50.0f, 50.0f);
+        ImGui::SliderFloat("Y", &(m_selected_position[1]), -50.0f, 50.0f);
+        ImGui::SliderFloat("Z", &(m_selected_position[2]), -50.0f, 50.0f);
+        if (m_selected_position != m_renderScene->getPosition(m_selected, false)){
+            m_renderScene->setLightPosition(m_selected, m_selected_position);
+        }
     }
-
-
     ImGui::End();
 }
 
@@ -266,20 +352,20 @@ void ImGuiInterface<VecType>::_drawNewInformation(float width, float height){
 
     ImGui::Begin("New thing");
 
-    Object<VecType>* o = m_renderScene->getTempObject();
+    // Object<VecType>* o = m_renderScene->getTempObject();
     Light<VecType>* l = m_renderScene->getTempLight();
 
-    if (o != nullptr){
-        m_selected_mat = m_renderScene->getMaterial(m_selected);
-        float color[3] = {m_selected_mat->color[0], m_selected_mat->color[1], m_selected_mat->color[2] };
+    // if (o != nullptr){
+    //     m_selected_mat = m_renderScene->getMaterial(m_selected);
+    //     float color[3] = {m_selected_mat->color[0], m_selected_mat->color[1], m_selected_mat->color[2] };
 
-        ImGui::ColorEdit3 ("Color", color);
-        ImGui::SliderFloat ("metallic", &(m_selected_mat->metallic), 0.0f, 1.0f);
-        ImGui::SliderFloat ("roughness", &(m_selected_mat->roughness), 0.0f, 1.0f);
-        ImGui::SliderFloat ("ao", &(m_selected_mat->ao), 0.0f, 1.0f);
+    //     ImGui::ColorEdit3 ("Color", color);
+    //     ImGui::SliderFloat ("metallic", &(m_selected_mat->metallic), 0.0f, 1.0f);
+    //     ImGui::SliderFloat ("roughness", &(m_selected_mat->roughness), 0.0f, 1.0f);
+    //     ImGui::SliderFloat ("ao", &(m_selected_mat->ao), 0.0f, 1.0f);
 
-        m_selected_mat->color = glm::vec3(color[0], color[1], color[2]);
-    }
+    //     m_selected_mat->color = glm::vec3(color[0], color[1], color[2]);
+    // }
 
     if (l != nullptr){
         glm::vec3 light_color = l->getColor();

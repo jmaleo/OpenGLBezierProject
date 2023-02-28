@@ -10,6 +10,7 @@
 
 #include "structures.hpp"
 #include "ParticlesContainer.t.hpp"
+#include "_cube_utils.hpp"
 
 // VecType like glm::vec2 or glm::vec3 
 // FOR THE MOMENT, THIS CLASS IS ONLY FOR CUBE (3D). Maybe, it could be interesting to make it generic for all kind of object and implements sub classes for each kind of object.
@@ -20,6 +21,8 @@ class Object{
         Object ( int id ) { m_id = id; }
         Object ( int id, std::vector < VecType > list_vertices, std::vector < VecType > list_normales, glm::vec3 color, std::vector < unsigned int > list_indices );
         Object ( int id, std::vector < VecType > list_vertices, std::vector < unsigned int > list_indices );
+
+        Object (bool cube, VecType position, float size);
 
         virtual ~Object ();
 
@@ -44,6 +47,8 @@ class Object{
         void setMinPosition ( VecType minPosition ) { m_minPosition = minPosition; }
 
         void setMaxPosition ( VecType maxPosition ) { m_maxPosition = maxPosition; }
+
+        void translate ( VecType translation );
 
         // // //
         // GETTERS
@@ -78,6 +83,7 @@ class Object{
         ParticlesContainer* getContainer () { return m_container; }
         void setContainer (ParticlesContainer* container) { m_container = container; }
 
+        bool isTranslated () { return translated; }
 
     private : 
         // 0 for cube, 1 for other;
@@ -100,6 +106,9 @@ class Object{
 
         // Particles container
         ParticlesContainer* m_container = nullptr;
+
+
+        bool translated = false;
 
 
 

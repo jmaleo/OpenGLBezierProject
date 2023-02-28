@@ -17,6 +17,7 @@
 #include "Scene.t.hpp"
 #include "Camera.h"
 #include "ParticlesContainer.t.hpp"
+#include "_cube_utils.hpp"
 
 
 float initial_time = clock ();
@@ -39,30 +40,6 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam);
  */
 Object<glm::vec3>* generateCube (int id, glm::vec3 position, float length, glm::vec3 col, bool normal_dir);
 
-/**
- * @brief Generates cube (or rectangular shape)
- * 
- * @param position of the top left back vertex;
- * @param length1 
- * @param length2 
- * @return std::vector<glm::vec3> 
- */
-std::vector<glm::vec3> generateCubeVertices(glm::vec3 position, float length1, float length2);
-
-/**
- * @brief Generates Indices of the prism or cube.
- * 
- * @param vertices 
- * @return std::vector<int> 
- */
-std::vector<unsigned int> generateCubeIndices ();
-
-/**
- * @brief Generates normales of given vertices, for a cube of prism.
- * 
- * @param vertices 
- * @return std::vector <glm::vec3> 
- */
-std::vector <glm::vec3> generateCubeNormales (std::vector <glm::vec3> vertices, bool normal_dir);
+Object<glm::vec3>* generateSphere (int id, glm::vec3 center, float radius, glm::vec3 col);
 
 std::vector < Object<glm::vec3> * > create_grid_objects (Object<glm::vec3>*, float size);

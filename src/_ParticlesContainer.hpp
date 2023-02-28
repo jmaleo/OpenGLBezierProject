@@ -36,6 +36,9 @@ class ParticlesContainer {
 
         int get_number_particles () { return m_particles.size(); }
 
+        // Position : 1 for uniform disposition and 0 for the center.
+        void resetParticles(int nb_particles_per_side, int position);
+
     private : 
 
         unsigned int particleVAO;
@@ -59,9 +62,13 @@ class ParticlesContainer {
 
 
         void m_create_particles (int nb_particles_per_side);
+        void m_create_particles_center (int nb_particles);
         void m_create_voxelGrid ();
 
         void m_particles_collisions ();
         // void resolve_collision (Particle* p1, Particle* p2);
         bool is_in_collision (Particle p1, Particle p2);
+
+
+        bool first_time = true;
 };

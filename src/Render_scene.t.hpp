@@ -88,20 +88,23 @@ void RenderScene<VecType>::m_drawObjects(float width, float height){
     std::vector <Light<VecType>*> lights = m_myScene->getListLights();    
 
     for (auto obj : objs){
-        if (!m_selected_object || m_selected != obj->getId())
+        if (!m_selected_object || m_selected != obj->getId()){
             m_render->draw_Object(obj, lights, m_shaderObj, width, height);
-        if (obj->isContainer()){
+        }
+        if (obj->isContainer() && m_particlesVisible){
             if (obj->getContainer()->get_number_particles() == 0){
                 m_render->draw_Object(obj, lights, m_shaderObj, width, height);
             }
             else {
-                obj->getContainer()->update(0.1f);
+                if (! m_stopParticles)
+                    obj->getContainer()->update(m_deltaTime);
                 m_render->draw_Particles(obj, m_shaderLight, width, height);
             }
         }
     }
-    if (m_selected_object)
+    if (m_selected_object){
         m_drawObjSelection(m_selected, width, height);
+    }
 } 
 
 template<typename VecType>
@@ -111,8 +114,9 @@ void RenderScene<VecType>::m_drawLights(float width, float height){
         if (!m_selected_light || m_selected != light->getId())
             m_render->draw_Light(light, m_shaderLight, width, height);
     }
-    if (m_selected_light)
+    if (m_selected_light){
         m_drawLightSelection(m_selected, width, height);
+    }
 
 } 
 
@@ -278,4 +282,73 @@ void RenderScene<VecType>::initShaders(){
     m_shaderBloom->setInt("hdrBuffer", 0);
     m_shaderBloom->setInt("bloomBlur", 1);
     m_shaderBloom->setInt("brightPixels", 2);
+}
+
+
+// Position : 1 for uniform disposition and 0 for the center.
+template<typename VecType>
+void RenderScene<VecType>::resetParticles(int nbParticles, int position){
+    for (auto obj : m_myScene->getListObjects()){
+        if (obj->isContainer()){
+            // I take the number of wanted particles, and I took the pow of 1/3 in order to have particles per side.
+            obj->getContainer()->resetParticles(pow(nbParticles, 1.f/3.f), position);
+            obj->getContainer()->set_setUp(false);
+            std::cout << "Reset particles" << std::endl;
+        }
+    }
+}
+
+template<typename VecType>
+bool RenderScene<VecType>::isContainer(int id){
+    for (auto obj : m_myScene->getListObjects()){
+        if (obj->getId() == id){
+            return obj->isContainer();
+        }
+    }
+    return false;
+}
+
+template<typename VecType>
+VecType RenderScene<VecType>::getPosition(int id, bool obj){
+    if (obj){
+        for (auto obj : m_myScene->getListObjects()){
+            if (obj->getId() == id){
+                return obj->getMinPosition();
+            }
+        }
+    }
+    else {
+        for (auto light : m_myScene->getListLights()){
+            if (light->getId() == id){
+                return light->getPosition();
+            }
+        }
+    }
+    return VecType(0.0f);
+}
+
+template<typename VecType>
+void RenderScene<VecType>::setObjPosition(int id, VecType pos){
+    for (auto obj : m_myScene->getListObjects()){
+        if (obj->getId() == id){
+            glm::vec3 min_pos = obj->getMinPosition();
+            glm::vec3 translation = pos - min_pos;
+            obj->translate(translation);
+            obj->setMaxPosition(obj->getVertices()[5]);
+            obj->setMinPosition(obj->getVertices()[3]);
+            m_render->setUp_Object(obj);
+        }
+    }
+}
+
+template<typename VecType>
+void RenderScene<VecType>::setLightPosition(int id, VecType pos){
+    for (auto light : m_myScene->getListLights()){
+        if (light->getId() == id){
+            glm::vec3 min_pos = light->getPosition();
+            glm::vec3 translation = pos - min_pos;
+            light->translate(translation);
+            m_render->setUp_Light(light);
+        }
+    }
 }

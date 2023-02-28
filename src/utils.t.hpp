@@ -21,10 +21,20 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
     Object<glm::vec3>* leftCube = generateCube (2, glm::vec3(-length/4, demi_length/8, -demi_length), length/5, glm::vec3(0.8f,0.5f,0.1f), true);
     Object<glm::vec3>* rightCube = generateCube (3, glm::vec3(length/8, demi_length/8, -demi_length), length/8, glm::vec3(0.1f,0.6f,0.8f), true);
 
+    Object<glm::vec3>* oneSphere = generateSphere (4, glm::vec3(0, demi_length/5.5, -demi_length/1.3f), 1.5, glm::vec3(0.7f, 0.3f, 0.05f));
+    Object<glm::vec3>* twoSphere = generateSphere (5, glm::vec3(length/9, demi_length/9, -demi_length/1.3f), 2, glm::vec3(0.8f, 0.1f, 0.7f));
+    Object<glm::vec3>* threeSphere = generateSphere (5, glm::vec3(0, demi_length/4.5, -demi_length/1.3f), 2, glm::vec3(0.9f, 0.1f, 0.1f));
+    Object<glm::vec3>* foorSphere = generateSphere (5, glm::vec3(0, -demi_length/4, -demi_length/2), 5, glm::vec3(0.9f, 0.5f, 0.7f));
+
     myScene->addObject(principalObj);
     myScene->addObject(floorCube);
     myScene->addObject(leftCube);
     myScene->addObject(rightCube);
+    myScene->addObject(oneSphere);
+    myScene->addObject(twoSphere);
+    myScene->addObject(threeSphere);
+    myScene->addObject(foorSphere);
+    
 
     myScene->addLight(new Light<glm::vec3> (0, glm::vec3(-length/4, length/8, -length/3), glm::vec3(0.1f, 0.1f, 0.7f)));
     myScene->addLight(new Light<glm::vec3> (1, glm::vec3(length/4, length/8, -length/3), glm::vec3(0.7f, 0.1f, 0.1f)));
@@ -35,6 +45,7 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
     ParticlesContainer *container = new ParticlesContainer(15, leftCube->getMinPosition(), leftCube->getMaxPosition());
     leftCube->setContainer(container);
     
+    // TO SEE THE GRID OF PARTICLES
     // std::vector <Object<glm::vec3> *> grid = (create_grid_objects(rightCube, container->get_size()));
     // for (int i = 0; i < grid.size(); i++){
     //     myScene->addObject(grid[i]);
@@ -62,128 +73,6 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
 }
 
 /**
- * @brief Generates a cube (or a rectangular shape).
- * 
- * @param position of the top left front vertex
- * @param length1 
- * @param length2 
- * @return std::vector<glm::vec3> 
- */
-std::vector<glm::vec3> generateCubeVertices(glm::vec3 position, float length1, float length2){
-
-    std::vector<glm::vec3> vertices;
-
-    // if the origin and positions are like that : 
-    //                                                     0 -------4
-    //     |                                               /|      /|
-    //     |                                              /_|3____/ |7
-    //    O ----->                       here :          1|/     5|/ 
-    //      \                                            2/_______/6
-    //       \                                          
-    ////////////////////////////////////////////////
-    
-    // vertices.push_back(position); // 0 
-    // vertices.push_back(glm::vec3(position[0], position[1], position[2]+length1)); //  1 
-    // vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2]+length1)); // 2 
-    // vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2])); // 3 
-    // vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2])); // 4 
-    // vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2]+length1)); // 5 
-    // vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2]+length1)); // 6 
-    // vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2])); // 7 
-
-    // left face
-    vertices.push_back(position); // 0 
-    vertices.push_back(glm::vec3(position[0], position[1], position[2]+length1)); //  1 
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2]+length1)); // 2 
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2])); // 3 
-
-    // right face 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2])); // 4 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2]+length1)); // 5 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2]+length1)); // 6 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2])); // 7
-
-    // upper face
-    vertices.push_back(position); // 0 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2])); // 4 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2]+length1)); // 5 
-    vertices.push_back(glm::vec3(position[0], position[1], position[2]+length1)); //  1 
-
-    // botton face
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2])); // 3 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2])); // 7 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2]+length1)); // 6 
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2]+length1)); // 2 
-
-    // front face
-    vertices.push_back(glm::vec3(position[0], position[1], position[2]+length1)); //  1 
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2]+length1)); // 2 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2]+length1)); // 6
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2]+length1)); // 5 
-
-    // back face
-    vertices.push_back(position); // 0 
-    vertices.push_back(glm::vec3(position[0], position[1]-length1, position[2])); // 3 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1]-length1, position[2])); // 7 
-    vertices.push_back(glm::vec3(position[0]+length2, position[1], position[2])); // 4 
-
-    return vertices;
-}
-
-/**
- * @brief Generates Indices of the prism or cube.
- * 
- * @param vertices 
- * @return std::vector<int> 
- */
-std::vector<unsigned int> generateCubeIndices (){
-    std::vector<unsigned int> indices;
-
-    for (int i = 0; i < 6; i++){
-        int idx = i * 4;
-        indices.push_back(idx);
-        indices.push_back(idx+1);
-        indices.push_back(idx+2);
-        indices.push_back(idx+2);
-        indices.push_back(idx+3);
-        indices.push_back(idx);
-    }
-    return indices;
-}
-
-
-/**
- * @brief Generates normales of given vertices, for a cube of prism.
- * 
- * @param vertices 
- * @return std::vector <glm::vec3> 
- */
-std::vector <glm::vec3> generateCubeNormales (std::vector <glm::vec3> vertices, bool normal_dir){
-    std::vector<glm::vec3> normales;
-    float dir = (normal_dir)?1.0f:-1.0f;
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(-1.0f, 0.0f, 0.0f)); // Left face
-    }
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(1.0f, 0.0f, 0.0f)); // Right face
-    }
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(0.0f, 1.0f, 0.0f)); // upper face
-    }
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(0.0f, -1.0f, 0.0f)); // bottom face
-    }
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(0.0f, 0.0f, 1.0f)); // front face
-    }
-    for (int i = 0; i < 4; i++){
-        normales.push_back(dir * glm::vec3(0.0f, 0.0f, -1.0f)); // back face
-    }
-    // std::cout << "Il y a " << vertices.size() << " vertices et " << normales.size() << " normales" << std::endl;
-    return normales;
-}
-
-/**
  * @brief 
  * 
  * @param id 
@@ -196,7 +85,7 @@ std::vector <glm::vec3> generateCubeNormales (std::vector <glm::vec3> vertices, 
 Object<glm::vec3>* generateCube (int id, glm::vec3 position, float length, glm::vec3 col, bool normal_dir){
 
     std::vector<glm::vec3> vertices = generateCubeVertices(position, length, length);
-    std::vector<glm::vec3> normal = generateCubeNormales(vertices, normal_dir);
+    std::vector<glm::vec3> normal = generateCubeNormales(normal_dir);
     std::vector<unsigned int> indices = generateCubeIndices();
     Object<glm::vec3>* cube = new Object<glm::vec3>(id, vertices, normal, col, indices);
     cube->setType(0); // Cube
@@ -235,4 +124,20 @@ std::vector < Object<glm::vec3> * > create_grid_objects (Object<glm::vec3>* m_ob
     // std::cout << "Taille de la grille ? " << nb_voxel_x * nb_voxel_y * nb_voxel_z << std::endl;
 
     return m_grid_objects;
+}
+
+
+Object<glm::vec3>* generateSphere (int id, glm::vec3 center, float radius, glm::vec3 col){
+    int stack = 100;
+    int slice = 100;
+    glm::vec3 color = col;
+    std::vector <glm::vec3> vertices = generateSphereVertices(center, radius, stack, slice);
+    std::vector <unsigned int> indices = generateSphereIndices(stack, slice);
+    std::vector <glm::vec3> normales = generateSphereNormales(center, vertices);
+
+    Object<glm::vec3>* sphere = new Object<glm::vec3>(id, vertices, normales, color, indices);
+    sphere->setType(1); // Sphere
+    sphere->setMaxPosition(center);
+    sphere->setMinPosition(center);
+    return sphere;
 }
