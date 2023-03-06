@@ -72,7 +72,7 @@ void RenderScene<VecType>::draw (float width, float height, int selection){
     // std::cout << "Draw error : " << glGetError() << std::endl;
 
     // BLUR THE FRAME BUFFER
-    m_render->blur (m_shaderBlur, (unsigned int) width, (unsigned int) height, 5);
+    m_render->blur (m_shaderBlur, (unsigned int) width, (unsigned int) height, 10);
 
     // Only hdr
     // m_render->draw_HDR(m_shaderHDR, width, height, (int16_t)m_hdr, m_exposure);

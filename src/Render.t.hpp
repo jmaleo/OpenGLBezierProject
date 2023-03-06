@@ -450,7 +450,7 @@ void Render<VecType>::setUp_BLOOM(float src_width, float src_height)
     glGenFramebuffers(2, pingpongFBO);
     glGenTextures(2, pingpongBuffers);
     for (unsigned int i = 0; i < 2; i++)
-    {
+    {   
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
         glBindTexture(GL_TEXTURE_2D, pingpongBuffers[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, (unsigned int)src_width, (unsigned int)src_height, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -475,10 +475,12 @@ void Render<VecType>::blur(ShaderProgram *shader, unsigned int width, unsigned i
     shader->use();
 
     for (int i = 0; i < amount; i++)
-    {
+    {   
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[m_horizontal]);
-        shader->setInt("horizontal", m_horizontal);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffers[!m_horizontal]); // bind texture of other framebuffer (or scene if first iteration)
+        
+        shader->setInt("horizontal", m_horizontal);
 
         setUp_quad();
 
@@ -500,7 +502,7 @@ void Render<VecType>::draw_BLOOM(ShaderProgram *shader, float width, float heigh
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!m_horizontal]);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);
+    glBindTexture(GL_TEXTURE_2D, pingpongBuffers[!m_horizontal]);
 
     shader->setInt("hdr", hdr);
     shader->setInt("bloom", bloom);
