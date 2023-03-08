@@ -23,6 +23,7 @@ class ParticlesContainer {
         void update (float dt);
 
         std::vector < glm::vec3 > get_positions();
+        std::vector < glm::vec3 > get_colors() { return m_colors; }
 
         glm::vec3 get_color() { return m_mat.color; }
         float get_size() { return m_carac.size; }
@@ -30,6 +31,8 @@ class ParticlesContainer {
         unsigned int* get_particleVAO() { return &particleVAO; }
 
         unsigned int* get_particleVBO() { return &particleVBO; }
+
+        unsigned int* get_particleVBO_color() { return &particleVBO_color; }
 
         bool is_setUp() { return m_setUp; }
         void set_setUp(bool setUp) { m_setUp = setUp; }
@@ -39,10 +42,19 @@ class ParticlesContainer {
         // Position : 1 for uniform disposition and 0 for the center.
         void resetParticles(int nb_particles_per_side, int position);
 
+
+        /**
+         * @brief Create the particles' color in the cube.
+         * if random is true, the color is random, near a red color, 
+         * else (so if the particles is near the center) the color is a fade from yellow (center) to red to dark (far).
+         */
+        void createColor (bool random);
+
     private : 
 
         unsigned int particleVAO;
         unsigned int particleVBO;
+        unsigned int particleVBO_color;
 
         bool m_setUp = false;
 
@@ -50,6 +62,7 @@ class ParticlesContainer {
         std::vector < int > lines;
 
         std::vector < Particle > m_particles;
+        std::vector < glm::vec3 > m_colors;
 
         std::vector < std::vector <int> > m_voxelGrid;
 
@@ -70,5 +83,5 @@ class ParticlesContainer {
         bool is_in_collision (Particle p1, Particle p2);
 
 
-        bool first_time = true;
+
 };

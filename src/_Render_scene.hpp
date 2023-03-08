@@ -112,6 +112,9 @@ class RenderScene {
         std::string m_vertexShaderBlur_name = "vertexBLUR.glsl";
         std::string m_fragmentShaderBlur_name = "fragmentBLUR.glsl";
 
+        std::string m_vertexShaderParticles_name = "vertexPARTICLE.glsl";
+        std::string m_fragmentShaderParticles_name = "fragmentPARTICLE.glsl";
+    
         std::string m_path_vertexShader = SHADER_DIR + m_vertexShader_name;
         std::string m_path_fragmentShader = SHADER_DIR + m_fragmentShader_name;
 
@@ -127,6 +130,9 @@ class RenderScene {
         std::string m_path_vertexShaderBlur = SHADER_DIR + m_vertexShaderBlur_name;
         std::string m_path_fragmentShaderBlur = SHADER_DIR + m_fragmentShaderBlur_name;
 
+        std::string m_path_vertexShaderParticles = SHADER_DIR + m_vertexShaderParticles_name;
+        std::string m_path_fragmentShaderParticles = SHADER_DIR + m_fragmentShaderParticles_name;
+
         // Used to debug for instance.
         ShaderProgram* m_shaderObj;
 
@@ -137,6 +143,8 @@ class RenderScene {
         ShaderProgram* m_shaderBloom;
 
         ShaderProgram* m_shaderBlur;
+
+        ShaderProgram* m_shaderParticles;
 
 
         Render<VecType>* m_render;

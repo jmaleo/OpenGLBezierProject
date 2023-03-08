@@ -35,7 +35,7 @@ CaracParticle initialiseCaracParticle (){
     carac.position = glm::vec3(0.0f);
     carac.velocity = glm::vec3(0.0f, -0.1f, 0.0f);
     carac.acceleration = glm::vec3(0.0f, 9.81f, 0.0f);
-    carac.life = 1000.0f;
+    carac.life = 10.0f;
     carac.size = 0.1f;
     carac.mass = 1.0f;
     return carac;

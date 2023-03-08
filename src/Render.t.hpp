@@ -358,13 +358,17 @@ void Render<VecType>::draw_Particles(Object<VecType> *obj, ShaderProgram *shader
 
     unsigned int *particleVAO = container->get_particleVAO();
     unsigned int *particleVBO = container->get_particleVBO();
-    std::vector<glm::vec3> vertices = container->get_positions();
+    unsigned int *particleVBO_color = container->get_particleVBO_color();
+
     // std::cout << "Size of vertices : " << vertices.size() << std::endl;
+    std::vector<glm::vec3> vertices = container->get_positions();
+    std::vector<glm::vec3> colors = container->get_colors();
 
     if (container->is_setUp() == false)
     {
         glGenVertexArrays(1, particleVAO);
         glGenBuffers(1, particleVBO);
+        glGenBuffers(1, particleVBO_color);
         container->set_setUp(true);
         glBindVertexArray(*particleVAO);
         // vertex positions
@@ -372,6 +376,12 @@ void Render<VecType>::draw_Particles(Object<VecType> *obj, ShaderProgram *shader
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
+
+        // vertex colors
+        glBindBuffer(GL_ARRAY_BUFFER, *particleVBO_color);
+        glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec3), &colors[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+        glEnableVertexAttribArray(1);
     }
 
     glBindVertexArray(*particleVAO);
@@ -400,8 +410,8 @@ void Render<VecType>::draw_Particles(Object<VecType> *obj, ShaderProgram *shader
 
     float time_now = glfwGetTime();
 
-    glm::vec3 color = container->get_color();
-    shader->setVec3("color", color);
+    // glm::vec3 color = container->get_color();
+    // shader->setVec3("color", color);
 
     // draw mesh
     // glLineWidth(10);

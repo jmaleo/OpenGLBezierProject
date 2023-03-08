@@ -98,7 +98,7 @@ void RenderScene<VecType>::m_drawObjects(float width, float height){
             else {
                 if (! m_stopParticles)
                     obj->getContainer()->update(m_deltaTime);
-                m_render->draw_Particles(obj, m_shaderLight, width, height);
+                m_render->draw_Particles(obj, m_shaderParticles, width, height);
             }
         }
     }
@@ -274,6 +274,7 @@ void RenderScene<VecType>::initShaders(){
 
     m_shaderBlur = new ShaderProgram(m_path_vertexShaderBlur.c_str(), m_path_fragmentShaderBlur.c_str());
 
+    m_shaderParticles = new ShaderProgram(m_path_vertexShaderParticles.c_str(), m_path_fragmentShaderParticles.c_str());
 
     m_shaderBlur->use();
     m_shaderBlur->setInt("image", 0);

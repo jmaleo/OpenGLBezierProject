@@ -41,9 +41,7 @@ void ParticlesContainer::update (float dt){
     for (int i = 0; i < m_particles.size(); i++) {
         // update the particles 
         current_carac = m_particles[i].get_carac();
-        if (first_time){
-            std::cout << "current_carac->velocity = " << current_carac->velocity.x << ", " << current_carac->velocity.y << ", " << current_carac->velocity.z << std::endl;
-        }
+
         current_carac->position += current_carac->velocity * dt;
         // current_carac->velocity += current_carac->acceleration * dt;
         // current_carac->acceleration *= 0.9f;
@@ -74,8 +72,14 @@ void ParticlesContainer::update (float dt){
             current_carac->position.z = m_pos_min.z;
             current_carac->velocity.z *= -1;
         }
+
+        current_carac->life -= dt;
+
+        if (current_carac->life < 0.0f){
+            current_carac->life = 0.0f;
+            m_particles.erase(m_particles.begin() + i);
+        }
     }
-    first_time = false;
     // return;
 }
 
@@ -102,10 +106,12 @@ void ParticlesContainer::m_create_particles (int nb_particles_per_side){
                 m_carac.velocity = glm::vec3(0.0f, -0.1f, 0.1f);
                 // m_carac.acceleration = glm::vec3(0.0f, -0.3f, 0.0f);
                 m_carac.position = pos;
+                m_carac.life = 500 + rand () % 2000;
                 m_particles.push_back(Particle(m_carac, m_mat));
             }
         }
     }
+    createColor(true);
 }
 
 void ParticlesContainer::m_create_voxelGrid (){
@@ -166,19 +172,19 @@ void ParticlesContainer::m_particles_collisions(){
         int z = floor (pos.z - m_pos_min.z) / spacing;
         
         int index = x + y * numx + z * numx * numy;
+        if (index >= m_voxelGrid.size()) {
+            index = m_voxelGrid.size() - 1;
+        }
         
         for (int j = 0; j < m_voxelGrid[index].size(); j++) {
             
-            if (index >= m_voxelGrid.size()) {
-                index = m_voxelGrid.size() - 1;
-            }
             int index2 = m_voxelGrid[index][j];
             if (index2 != i) {
                 if (is_in_collision(m_particles[i], m_particles[index2])) {
                     // check the distance between the two particles
                     float dist = glm::distance(m_particles[i].get_carac()->position, m_particles[index2].get_carac()->position);
                     // If the distance is extremely small, we continue, to avoid division by 0
-                    if (dist < 0.001) {
+                    if (dist < 0.001 && dist > -0.001) {
                         continue;
                     }
                     glm::vec3 v1 = m_particles[i].get_carac()->velocity;
@@ -187,10 +193,6 @@ void ParticlesContainer::m_particles_collisions(){
                     glm::vec3 p1 = m_particles[i].get_carac()->position;
                     glm::vec3 p2 = m_particles[index2].get_carac()->position;
 
-                    if (first_time){
-                        std::cout << "p1 " << p1.x << " " << p1.y << " " << p1.z << std::endl;
-                        std::cout << "p2 " << p2.x << " " << p2.y << " " << p2.z << std::endl;
-                    }
                     glm::vec3 n = glm::normalize(p2 - p1);
                     
                     glm::vec3 v1n = glm::dot(v1, n) * n;
@@ -217,27 +219,46 @@ void ParticlesContainer::m_create_particles_center(int nb_particles){
     // Create the particles in the center of the cube, following a little bit the cube shape.
     float distance_to_center = glm::distance(m_pos_max, m_pos_min) / 2.0f;
     
+    // Creation of two cube of particles, in the middle of the cube.
+    // for (int i = 0; i < nb_particles; i++) {
+    //     //generates a position in the center, with a random distance to the center.
+    //     float dir = (rand() % 2 == 0) ? -1 : 1;
+    //     float x = cube_center.x + dir * (rand() % 10) / 10.0f * distance_to_center/5;
+    //     float y = cube_center.y + dir * (rand() % 10) / 10.0f * distance_to_center/5;
+    //     float z = cube_center.z + dir * (rand() % 10) / 10.0f * distance_to_center/5;
+    //     glm::vec3 pos = glm::vec3(x, y, z);
+    //     // put the direction of the velocity in the inverse direction of the center of the cube.
+    //     glm::vec3 vel = glm::normalize(pos - cube_center) * 0.5f;
+    //     m_carac.position = pos;
+    //     m_carac.velocity = vel;
+    //     m_carac.life = 50 + rand () % 100;
+    //     m_particles.push_back(Particle(m_carac, m_mat));
+    // }
+
+    // Creation of a cube of particles, in the middle of the cube.
     for (int i = 0; i < nb_particles; i++) {
-        //generates a position in the center, with a random distance to the center.
-        float x = cube_center.x + (rand() % 10) / 10.0f * distance_to_center/5;
-        float y = cube_center.y + (rand() % 10) / 10.0f * distance_to_center/5;
-        float z = cube_center.z + (rand() % 10) / 10.0f * distance_to_center/5;
+        // random creation of a position INTO the cube given by its new_min_pos and new_max_pos.
+        // Around the center of the cube.
+        float random_dir_x = (rand() % 2 == 0) ? -1 : 1;
+        float random_dir_y = (rand() % 2 == 0) ? -1 : 1;
+        float random_dir_z = (rand() % 2 == 0) ? -1 : 1;
+        float x = cube_center.x + random_dir_x * (rand() % 10) / 10.0f * distance_to_center/5.0f;
+        float y = cube_center.y + random_dir_y * (rand() % 10) / 10.0f * distance_to_center/5.0f;
+        float z = cube_center.z + random_dir_z * (rand() % 10) / 10.0f * distance_to_center/5.0f;
+
         glm::vec3 pos = glm::vec3(x, y, z);
+
+        
         // put the direction of the velocity in the inverse direction of the center of the cube.
-        glm::vec3 vel = glm::normalize(pos - cube_center) * 0.5f;
-        // if (vel.x <= 0.001){
-        //     vel.x = 0.01f;
-        // }
-        // if (vel.y <= 0.001){
-        //     vel.y = 0.01f;
-        // }
-        // if (vel.z <= 0.0001){
-        //     vel.z = 0.01f;
-        // }
+        glm::vec3 vel = glm::normalize(cube_center - pos) * 0.5f;
         m_carac.position = pos;
         m_carac.velocity = vel;
+        m_carac.life = 50 + rand () % 100;
         m_particles.push_back(Particle(m_carac, m_mat));
     }
+
+    createColor(false);
+    // float max_dist_to_center = distance_to_center + ;
 }
 
 // Position : 1 for uniform disposition and 0 for the center.
@@ -250,4 +271,34 @@ void ParticlesContainer::resetParticles(int nb_particles_per_side, int position)
         m_create_particles_center(pow(nb_particles_per_side, 3.0f));
     }
     m_create_voxelGrid();
+}
+
+/**
+ * @brief Create the particles' color in the cube.
+ * if random is true, the color is random, near a red color, 
+ * else (so if the particles is near the center) the color is a fade from yellow (center) to red to dark (far).
+ */
+void ParticlesContainer::createColor (bool random){
+    m_colors.clear();
+    for (auto particle : m_particles){
+        if (random){
+            float glow = 3.f;
+            // Create a shiny color near the red color
+            glm::vec3 rand_color = glm::vec3(0.8f, 0.0f, 0.0f) + glm::vec3(glow, glow, glow);
+            m_colors.push_back(rand_color);
+            particle.get_material()->color = rand_color;
+        }
+        else{
+            glm::vec3 pos = particle.get_carac()->position;
+            float dist = glm::distance(pos, (m_pos_max + m_pos_min) / 2.0f);
+            float max_dist = glm::distance(m_pos_max, m_pos_min) / 2.0f;
+            float ratio = dist / max_dist;
+
+            // Create a color from yellow to red to dark with little glowy effect
+            glm::vec3 glow = glm::vec3(1.1f, 1.0f, 0.5f) * glm::vec3(0.5f + 0.5f * cos(ratio * 10.0f));
+            glm::vec3 color = glm::vec3(0.8f - ratio, ratio, 0.0f) + glow;
+            m_colors.push_back(color);
+            particle.get_material()->color = color;
+        }
+    }
 }

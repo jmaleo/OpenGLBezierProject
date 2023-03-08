@@ -42,8 +42,8 @@ Scene<glm::vec3>* generateCubeScene (Camera* cam){
     // Back light, HIGH INTENSITY
     myScene->addLight(new Light<glm::vec3> (3, glm::vec3(0, length/8.5, +length/3), glm::vec3(200.0f, 100.0f, 20.0f)));
 
-    ParticlesContainer *container = new ParticlesContainer(15, leftCube->getMinPosition(), leftCube->getMaxPosition());
-    leftCube->setContainer(container);
+    ParticlesContainer *container = new ParticlesContainer(15, rightCube->getMinPosition(), rightCube->getMaxPosition());
+    rightCube->setContainer(container);
     
     // TO SEE THE GRID OF PARTICLES
     // std::vector <Object<glm::vec3> *> grid = (create_grid_objects(rightCube, container->get_size()));
