@@ -58,7 +58,7 @@ To make sure the tool works, when restarting the application, you can just re cm
 ## Images 
 
 Little video of the scene.
-![Little video](img/animation_demo.webm)
+![Little video](img/animation_demo.gif)
 
 Initial Scene.
 ![Initial scene](img/initial_scene.png)
