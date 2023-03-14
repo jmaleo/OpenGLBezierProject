@@ -1,51 +1,73 @@
-# OpenGLBezierProject
+# Project Animation simulation and rendering
 
-This project is a little application of Bezier Curve and Surface, written in C++ with the help of the openGL Library.
-You may interact with a 3D scene, to visualise curves or surfaces randomly generated.
-- Be careful : there is the compiled application on the application directory. If you want to compile the algorithm, you need to import the project into Visual Studio.
+## Installation
 
-# The scene contains
-  - 3 light sources, visualised as points (there is 1 light at the back of the scene, and 2 behind the view).
-  - Following the curve mode (Curve with nbLines lines, Curve with nbLength for each lines, Surface) you'll have different visualisations :
-      For each visualisation, you can see the control points in orange.
-      -> Curve (both) : Lines correspond to the position of each points
-      -> Surface : 3 modes, the first corresponds to the surface color defined in the algorithm, with the lighting of each 3 points,
-                   the second corresponds to the normals of the surface, visualised as lines, orthogonal at each points,
-                   the last is the normals visualised as color interpolled, also with the lighting of each 3 points.
-  - During the running of the application, you can see the scene as a FPS view, and go through the scene by pressing ZQSD of your keyboard.
-## Some tools
-  - As said above, there is differents way to visualize the curve / surface. So, you can choose to see or not the surface or the curve, and also the control points.
-  - You can also choose to see 2 normals parameters (as lines or as color).
-  - For the curves, you can play with parameters like nbLines or nbLength.
-  - You can generate randomly new control points at any time.
- 
+```bash
+  git clone git@github.com:jmaleo/OpenGLBezierProject.git
+  cd OpenGLBezierProject
+  mkdir build && cd build
+  cmake .. && make -j20
+```
 
-# How to use the program
-- By pressing C on your keyboard, you can change between a bezier curve with X lines, a bezier curve with lines of Y length and a bezier surface.
-- By pressing P you can see the control polynom.
-- By pressing B you may show or not Curve or Surface.
-- By pressing R you may generate a new set of random control points.
-- During the curve scene, you may play with right or left arrow to change parameters as nbLength or nbLines.
-- During the surface scene, you can press on N to see normal as lines or normal as color (interpoled).
-- During the surface scene, you can press L to toggle wireframe display. 
+## Move arround the scene
+
+* To move arround the scene, you can use the mouse and the ZQSD keys.
+
+## Description of the interface
+
+The interface is mainly composed of many tools, widgets. 
+
+* The first one allows the user to see or not the scene. 
+If the user wants to see the scene, he can click on the button "Show scene".
+If it's true, the scene is displayed and also others widgets are displayed.
+* The second one allows the user to show or not objects, or lights.
+Also, this widget provides a list of tools to use the rendering status (bloom / hdr / only bright points after bluring).
+
+If the user wants to see objects, he can click on the button "Show objects".
+If it's true, the objects are displayed.
+* The third one allows the user to select the objects.
+There is a list of objects to choose, following the visible objects.
+
+If you click on one of them, the object is blinking and a little widget is displayed.
+* This little widget allows the user to move the object, to change the color and the variables of the materials for the microfacet rendering.
+
+If the user wants to see lights he can click on the button "Show lights" of the second widget.
+If it's true, the lights are displayed.
+* The fourth one allows the user to select lights and also add lights.
+There is a list of lights to choose, following the visible lights.
+
+If you click on one of them, the light is blinking and a little widget is displayed.
+* This little widget allows the user to move the light, to change the color.
 
 
-# Notes 
-For instance, as define in the algorithm, the control surface is define as a 10 X 4 points, only the Z axis will change thanks to the algorithm (it's possible to change it in the algorithm).
-There is also a limitation for the curve control points.
+* The last widget allows the user to play with particles. 
+You can stop the simulation, change the time between each frame, change the number of particles, change the distribution of the particles inside the box.
 
-## Problems
- - For the curve, by using a curve where each lines have the same length, there is a problem, and the last line just connect to the last control point, without taking into account if it corresponds to the length mentioned.
+## Description of the scene
+
+Here is the initial scene.
+
+![Initial scene](img/initial_scene.png)
+
+## Indications
+
+When you want to add lights, make sure to press ESC to quit the application, as the GLSL shaders are overwritte when adding lights.
+To make sure the tool works, when restarting the application, you can just re cmake .. the project, only to make sure the shaders are correct.
 
 
-# Images of the application
+## Images 
 
-![SimpleCurve](Application/SimpleCurve.PNG) ![CurveWithSameLength](Application/SimpleCurveWithSameLength.PNG)
+Little video of the scene.
+![Little video](img/animation_demo.webm)
 
-![SurfaceWithTriangles](Application/SurfaceWithTriangles.PNG)
+Initial Scene.
+![Initial scene](img/initial_scene.png)
 
-![SurfaceClean](Application/SurfaceClean.PNG)
+Initial scene without HDR.
+![Initial scene wo hdr](img/initial_scene_wo_hdr.png)
 
-![SurfaceWithNormals](Application/SurfaceWithNormals.PNG)
+Initial scene without HDR and BLOOM.
+![Initial scene](img/initial_scene_wo_hdr_bloom.png)
 
-![SurfaceNormal](Application/SurfaceNormals.PNG)
+Initial scene with only bright blurred points.
+![Initial scene](img/initial_scene_only_bright.png)
