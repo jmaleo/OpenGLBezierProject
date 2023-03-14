@@ -12,12 +12,12 @@
 ## What's inside
 
 * The initial idea for the rendering was to create a little scene with boxes, spheres and lights in order to implement the microfacet rendering method and also the HDR / Bloom.
-This was, in my opinion, completely done. Maybe it could be great to play with the tonemap or adjust methods, maybe add elements or even create materials.
+This is, in my opinion, completely done. Maybe it could be great to play with the tonemap or adjust methods, maybe add elements or even create materials.
 This part took me maybe around 15 to 20 hours. I wanted to have a good structure, and manage as possible the creation of objects. In that case, it's easy to change the scene. Here, there are only boxes, but in less than 10 lines we can adjust the creation to change the length of the boxes for each direction. 
 
 * For the simulation, the idea was to create, firstly, a fluid simulation. As it was new for me, I wanted to play with particle in a first plan.
 More and more the development was, and more and more the difficulties appeared. Also, this kind of development was completely new. So, I was checking references in google to see how to play with particles. 
-In a certain manner, it's used to compute the collision into the GPU. But, as I'm not familiar with it, I needed to use an accelerated structure to compute it from the CPU. I used the voxel grid. 
+In a certain manner, it's used to compute the collisions into the GPU. But, as I'm not familiar with it, I needed to use an accelerated structure to compute it from the CPU. I used the voxel grid. 
 The simulation is simpler than what I wanted firstly. In fact, there is only an initial speed, and collision. The simulation could easily be changed as the particle classes and the particle container contains all of we want to adjust the collision, the physical functions, ...
 This part took me maybe the same as the first part, around 20 hours. I was a little bit slow because I needed to read some documentation on how it works and all.
 
